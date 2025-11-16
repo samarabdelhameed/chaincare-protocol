@@ -5,7 +5,7 @@ members = [
     "care_treasury",
     "plugins/med_reminder",
     # "plugins/zk_camera",
-    # "plugins/step_counter",
+    "plugins/step_counter",
     # "plugins/governance",
     # "plugins/flipper",
 ]
