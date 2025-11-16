@@ -2,8 +2,8 @@
 members = [
     "care_space",
     "health_sbt",
-    # "care_treasury",
-    # "plugins/med_reminder",
+    "care_treasury",
+    "plugins/med_reminder",
     # "plugins/zk_camera",
     # "plugins/step_counter",
     # "plugins/governance",
