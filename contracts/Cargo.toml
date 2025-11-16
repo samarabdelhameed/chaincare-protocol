@@ -6,7 +6,7 @@ members = [
     "plugins/med_reminder",
     "plugins/zk_camera",
     "plugins/step_counter",
-    # "plugins/governance",
+    "plugins/governance",
     # "plugins/flipper",
 ]
 resolver = "2"
