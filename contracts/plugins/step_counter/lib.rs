@@ -3,6 +3,7 @@
 #[ink::contract]
 mod step_counter {
     use ink::storage::Mapping;
+    use ink::prelude::vec::Vec;
     use parity_scale_codec::{Decode, Encode};
     use scale_info::TypeInfo;
 
@@ -14,7 +15,11 @@ mod step_counter {
     }
 
     #[ink(event)]
-    pub struct StepsRecorded { patient: AccountId, steps: u64, date: u64 }
+    pub struct StepsRecorded {
+        patient: AccountId,
+        steps: u64,
+        date: u64,
+    }
 
     #[derive(Debug, PartialEq, Encode, Decode)]
     #[cfg_attr(feature = "std", derive(TypeInfo))]
@@ -38,7 +43,11 @@ mod step_counter {
                 return Err(Error::Unauthorised);
             }
             self.steps.insert(patient, &steps);
-            self.env().emit_event(StepsRecorded { patient, steps, date });
+            self.env().emit_event(StepsRecorded {
+                patient,
+                steps,
+                date,
+            });
             Ok(())
         }
 
@@ -58,4 +67,3 @@ mod step_counter {
         }
     }
 }
-
