@@ -1,7 +1,7 @@
 [workspace]
 members = [
     "care_space",
-    # "health_sbt",
+    "health_sbt",
     # "care_treasury",
     # "plugins/med_reminder",
     # "plugins/zk_camera",
