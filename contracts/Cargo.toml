@@ -7,6 +7,6 @@ members = [
     "plugins/zk_camera",
     "plugins/step_counter",
     "plugins/governance",
-    # "plugins/flipper",
+    "plugins/flipper",
 ]
 resolver = "2"
