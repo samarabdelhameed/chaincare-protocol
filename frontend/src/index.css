@@ -1,0 +1,149 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    --bg-primary: #0F0F1A;
+    --bg-secondary: #1A1A2E;
+    --neon-mint: #00F5A0;
+    --magenta-glow: #FF00E5;
+    --crypto-gold: #FFD600;
+    --glass-white: rgba(255, 255, 255, 0.1);
+    --glass-border: rgba(255, 255, 255, 0.2);
+  }
+
+  * {
+    @apply box-border;
+  }
+
+  body {
+    @apply m-0 p-0 overflow-x-hidden;
+    font-family: 'Inter', system-ui, -apple-system, sans-serif;
+    background: var(--bg-primary);
+    color: white;
+  }
+
+  @keyframes float {
+    0%, 100% { transform: translateY(0px); }
+    50% { transform: translateY(-20px); }
+  }
+
+  @keyframes pulse-glow {
+    0%, 100% { box-shadow: 0 0 20px var(--neon-mint); }
+    50% { box-shadow: 0 0 60px var(--neon-mint), 0 0 100px var(--neon-mint); }
+  }
+
+  @keyframes rotate-3d {
+    0% { transform: rotateY(0deg); }
+    100% { transform: rotateY(360deg); }
+  }
+
+  @keyframes slide-up {
+    0% { transform: translateY(100%); opacity: 0; }
+    100% { transform: translateY(0); opacity: 1; }
+  }
+
+  @keyframes bounce-in {
+    0% { transform: scale(0); opacity: 0; }
+    50% { transform: scale(1.1); }
+    100% { transform: scale(1); opacity: 1; }
+  }
+
+  @keyframes shimmer {
+    0% { background-position: -1000px 0; }
+    100% { background-position: 1000px 0; }
+  }
+
+  @keyframes coin-grow {
+    0% { transform: scale(0) rotateY(0deg); }
+    100% { transform: scale(1) rotateY(720deg); }
+  }
+
+  @keyframes shake {
+    0%, 100% { transform: translateX(0); }
+    25% { transform: translateX(-10px); }
+    75% { transform: translateX(10px); }
+  }
+
+  @keyframes card-flip {
+    0% { transform: rotateY(0deg); }
+    100% { transform: rotateY(180deg); }
+  }
+
+  @keyframes confetti {
+    0% { transform: translateY(0) rotate(0deg); opacity: 1; }
+    100% { transform: translateY(-500px) rotate(360deg); opacity: 0; }
+  }
+}
+
+@layer components {
+  .glass-morphism {
+    background: rgba(255, 255, 255, 0.05);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
+  }
+
+  .glass-card-3d {
+    @apply glass-morphism rounded-2xl p-6 relative;
+    transform-style: preserve-3d;
+    transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+
+  .glass-card-3d:hover {
+    transform: translateZ(20px) scale(1.02);
+    box-shadow: 0 12px 48px 0 rgba(0, 245, 160, 0.3);
+  }
+
+  .neon-button {
+    @apply relative px-8 py-4 rounded-xl font-semibold text-lg;
+    background: linear-gradient(135deg, var(--neon-mint), var(--magenta-glow));
+    border: 2px solid transparent;
+    box-shadow: 0 0 20px rgba(0, 245, 160, 0.5);
+    transition: all 0.3s ease;
+    cursor: pointer;
+  }
+
+  .neon-button:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 0 40px rgba(0, 245, 160, 0.8), 0 0 60px rgba(255, 0, 229, 0.5);
+  }
+
+  .neon-button:active {
+    transform: scale(0.95);
+  }
+
+  .gradient-text {
+    background: linear-gradient(135deg, var(--neon-mint), var(--magenta-glow));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+
+  .perspective-container {
+    perspective: 1000px;
+    transform-style: preserve-3d;
+  }
+
+  .loading-skeleton {
+    background: linear-gradient(90deg, rgba(255,255,255,0.05) 0%, rgba(255,255,255,0.15) 50%, rgba(255,255,255,0.05) 100%);
+    background-size: 1000px 100%;
+    animation: shimmer 2s infinite;
+  }
+}
+
+@layer utilities {
+  .text-shadow-glow {
+    text-shadow: 0 0 10px currentColor, 0 0 20px currentColor;
+  }
+
+  .transition-smooth {
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+
+  .mono {
+    font-family: 'Space Mono', monospace;
+  }
+}
