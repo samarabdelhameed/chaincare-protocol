@@ -1,0 +1,290 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🔐 Decrypt Polkadot Backup</title>
+    <script src="https://unpkg.com/@polkadot/util-crypto@12.6.2/bundle-polkadot-util-crypto.js"></script>
+    <script src="https://unpkg.com/@polkadot/util@12.6.2/bundle-polkadot-util.js"></script>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            max-width: 800px;
+            margin: 50px auto;
+            padding: 20px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: #333;
+        }
+        .container {
+            background: white;
+            padding: 30px;
+            border-radius: 15px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.2);
+        }
+        h1 {
+            color: #667eea;
+            text-align: center;
+            margin-bottom: 10px;
+        }
+        .subtitle {
+            text-align: center;
+            color: #666;
+            margin-bottom: 30px;
+        }
+        label {
+            display: block;
+            margin-top: 20px;
+            font-weight: bold;
+            color: #555;
+        }
+        textarea, input {
+            width: 100%;
+            padding: 12px;
+            margin-top: 8px;
+            border: 2px solid #ddd;
+            border-radius: 8px;
+            font-family: monospace;
+            font-size: 14px;
+            box-sizing: border-box;
+        }
+        textarea {
+            min-height: 150px;
+            resize: vertical;
+        }
+        button {
+            width: 100%;
+            padding: 15px;
+            margin-top: 20px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: transform 0.2s;
+        }
+        button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 20px rgba(102, 126, 234, 0.4);
+        }
+        button:disabled {
+            background: #ccc;
+            cursor: not-allowed;
+            transform: none;
+        }
+        .result {
+            margin-top: 20px;
+            padding: 20px;
+            border-radius: 8px;
+            display: none;
+        }
+        .success {
+            background: #d4edda;
+            border: 2px solid #28a745;
+            color: #155724;
+        }
+        .error {
+            background: #f8d7da;
+            border: 2px solid #dc3545;
+            color: #721c24;
+        }
+        .mnemonic-box {
+            background: #f8f9fa;
+            padding: 15px;
+            border-radius: 8px;
+            margin-top: 15px;
+            font-family: monospace;
+            font-size: 16px;
+            word-break: break-word;
+            border: 2px solid #28a745;
+        }
+        .warning {
+            background: #fff3cd;
+            border: 2px solid #ffc107;
+            color: #856404;
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+        }
+        .info {
+            background: #d1ecf1;
+            border: 2px solid #17a2b8;
+            color: #0c5460;
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+        }
+        .copy-btn {
+            width: auto;
+            padding: 10px 20px;
+            margin-top: 10px;
+            background: #28a745;
+        }
+        .copy-btn:hover {
+            background: #218838;
+        }
+        .spinner {
+            display: none;
+            text-align: center;
+            margin-top: 20px;
+        }
+        .spinner.active {
+            display: block;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🔐 Decrypt Polkadot Backup</h1>
+        <p class="subtitle">Extract your mnemonic phrase from encrypted JSON backup</p>
+        
+        <div class="warning">
+            <strong>⚠️ Security Warning:</strong> This tool runs entirely in your browser. 
+            Your mnemonic never leaves your computer. Keep it secret and never share it!
+        </div>
+
+        <div class="info">
+            <strong>📝 Your Account:</strong><br>
+            Address: <code>5HjLppYRLJ1jjRT4JHhg5FnDvPRtwxcFUvLqQ34iwGuFPayN</code><br>
+            Name: <strong>sa123</strong>
+        </div>
+
+        <label for="jsonInput">
+            📄 Paste your encrypted JSON backup:
+        </label>
+        <textarea id="jsonInput" placeholder='{"encoded":"...","encoding":{...},"address":"...","meta":{...}}'></textarea>
+
+        <label for="passwordInput">
+            🔑 Enter your password:
+        </label>
+        <input type="password" id="passwordInput" placeholder="Enter the password you used to encrypt this backup">
+
+        <button onclick="decryptBackup()" id="decryptBtn">
+            🔓 Decrypt & Extract Mnemonic
+        </button>
+
+        <div class="spinner" id="spinner">
+            <p>⏳ Decrypting... Please wait...</p>
+        </div>
+
+        <div id="result" class="result"></div>
+    </div>
+
+    <script>
+        async function decryptBackup() {
+            const jsonInput = document.getElementById('jsonInput').value.trim();
+            const password = document.getElementById('passwordInput').value;
+            const resultDiv = document.getElementById('result');
+            const decryptBtn = document.getElementById('decryptBtn');
+            const spinner = document.getElementById('spinner');
+
+            // Clear previous results
+            resultDiv.style.display = 'none';
+            resultDiv.className = 'result';
+            resultDiv.innerHTML = '';
+
+            // Validate inputs
+            if (!jsonInput) {
+                showError('Please paste your JSON backup');
+                return;
+            }
+
+            if (!password) {
+                showError('Please enter your password');
+                return;
+            }
+
+            // Parse JSON
+            let backup;
+            try {
+                backup = JSON.parse(jsonInput);
+            } catch (e) {
+                showError('Invalid JSON format. Please check your backup file.');
+                return;
+            }
+
+            // Show loading
+            decryptBtn.disabled = true;
+            spinner.classList.add('active');
+
+            try {
+                // Wait for crypto to be ready
+                await polkadotUtilCrypto.cryptoWaitReady();
+
+                // Decode the backup
+                const decoded = polkadotUtilCrypto.jsonDecrypt(backup, password);
+                
+                // Convert to mnemonic
+                const mnemonic = polkadotUtil.u8aToString(decoded);
+
+                // Show success
+                showSuccess(mnemonic, backup.address);
+
+            } catch (error) {
+                console.error('Decryption error:', error);
+                if (error.message.includes('password')) {
+                    showError('❌ Incorrect password! Please try again.');
+                } else {
+                    showError('❌ Decryption failed: ' + error.message);
+                }
+            } finally {
+                decryptBtn.disabled = false;
+                spinner.classList.remove('active');
+            }
+        }
+
+        function showSuccess(mnemonic, address) {
+            const resultDiv = document.getElementById('result');
+            resultDiv.className = 'result success';
+            resultDiv.innerHTML = `
+                <h3>✅ Success! Mnemonic Extracted</h3>
+                <p><strong>Address:</strong> <code>${address}</code></p>
+                <p><strong>Your 12-word Mnemonic Phrase:</strong></p>
+                <div class="mnemonic-box" id="mnemonicBox">${mnemonic}</div>
+                <button class="copy-btn" onclick="copyMnemonic()">📋 Copy Mnemonic</button>
+                <div style="margin-top: 20px; padding: 15px; background: #fff3cd; border-radius: 8px;">
+                    <strong>⚠️ Next Steps:</strong><br>
+                    1. Copy the mnemonic above<br>
+                    2. Run: <code>cd contracts && ./setup-mnemonic.sh</code><br>
+                    3. Paste the mnemonic when prompted<br>
+                    4. Run: <code>./deploy-and-verify.sh</code>
+                </div>
+            `;
+            resultDiv.style.display = 'block';
+        }
+
+        function showError(message) {
+            const resultDiv = document.getElementById('result');
+            resultDiv.className = 'result error';
+            resultDiv.innerHTML = `<h3>❌ Error</h3><p>${message}</p>`;
+            resultDiv.style.display = 'block';
+        }
+
+        function copyMnemonic() {
+            const mnemonicBox = document.getElementById('mnemonicBox');
+            const text = mnemonicBox.textContent;
+            
+            navigator.clipboard.writeText(text).then(() => {
+                alert('✅ Mnemonic copied to clipboard!');
+            }).catch(err => {
+                // Fallback for older browsers
+                const textArea = document.createElement('textarea');
+                textArea.value = text;
+                document.body.appendChild(textArea);
+                textArea.select();
+                document.execCommand('copy');
+                document.body.removeChild(textArea);
+                alert('✅ Mnemonic copied to clipboard!');
+            });
+        }
+
+        // Allow Enter key to decrypt
+        document.getElementById('passwordInput').addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                decryptBackup();
+            }
+        });
+    </script>
+</body>
+</html>
