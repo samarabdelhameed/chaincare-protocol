@@ -15,3 +15,7 @@ wallets/
 .DS_Store
 **/.DS_Store
 .vscode/
+logs/
+.chaincare_pids
+__pycache__/
+*.pyc
