@@ -38,6 +38,50 @@ echo -e "${GREEN}📝 Address: $ADDRESS${NC}"
 echo -e "${GREEN}🌐 RPC: $RPC_URL${NC}"
 echo ""
 
+# Function to get Subscan URL based on network
+get_subscan_url() {
+  local rpc_url="$RPC_URL"
+  local network="$NETWORK"
+  
+  # Detect network from RPC URL if NETWORK not set
+  if [ -z "$network" ]; then
+    if echo "$rpc_url" | grep -qi "paseo"; then
+      network="paseo"
+    elif echo "$rpc_url" | grep -qi "shibuya"; then
+      network="shibuya"
+    elif echo "$rpc_url" | grep -qi "polkadot"; then
+      network="polkadot"
+    elif echo "$rpc_url" | grep -qi "westend"; then
+      network="westend"
+    else
+      network="polkadot"  # default
+    fi
+  fi
+  
+  # Return appropriate Subscan URL
+  case "$network" in
+    paseo)
+      echo "https://paseo.subscan.io"
+      ;;
+    shibuya)
+      echo "https://shibuya.subscan.io"
+      ;;
+    polkadot|polkadot-testnet)
+      echo "https://polkadot.subscan.io"
+      ;;
+    westend)
+      echo "https://westend.subscan.io"
+      ;;
+    *)
+      echo "https://polkadot.subscan.io"  # default
+      ;;
+  esac
+}
+
+SUBSCAN_BASE=$(get_subscan_url)
+echo -e "${GREEN}🔍 Subscan Explorer: $SUBSCAN_BASE${NC}"
+echo ""
+
 # Array to store addresses
 declare -A ADDRESSES
 
@@ -64,7 +108,7 @@ fi
 ADDRESSES[health_sbt]="$HEALTH_SBT"
 echo -e "${GREEN}✅ health_sbt deployed: $HEALTH_SBT${NC}"
 echo -e "${GREEN}   Extrinsic: $EXTRINSIC_HASH${NC}"
-echo -e "${YELLOW}   Verify at: https://polkadot.subscan.io/extrinsic/$EXTRINSIC_HASH${NC}"
+echo -e "${YELLOW}   Verify at: $SUBSCAN_BASE/extrinsic/$EXTRINSIC_HASH${NC}"
 cd ..
 
 # 2. Deploy care_treasury
@@ -91,7 +135,7 @@ fi
 ADDRESSES[treasury]="$TREASURY"
 echo -e "${GREEN}✅ care_treasury deployed: $TREASURY${NC}"
 echo -e "${GREEN}   Extrinsic: $EXTRINSIC_HASH${NC}"
-echo -e "${YELLOW}   Verify at: https://polkadot.subscan.io/extrinsic/$EXTRINSIC_HASH${NC}"
+echo -e "${YELLOW}   Verify at: $SUBSCAN_BASE/extrinsic/$EXTRINSIC_HASH${NC}"
 cd ..
 
 # 3. Deploy care_space
@@ -118,7 +162,7 @@ fi
 ADDRESSES[care_space]="$CARE_SPACE"
 echo -e "${GREEN}✅ care_space deployed: $CARE_SPACE${NC}"
 echo -e "${GREEN}   Extrinsic: $EXTRINSIC_HASH${NC}"
-echo -e "${YELLOW}   Verify at: https://polkadot.subscan.io/extrinsic/$EXTRINSIC_HASH${NC}"
+echo -e "${YELLOW}   Verify at: $SUBSCAN_BASE/extrinsic/$EXTRINSIC_HASH${NC}"
 cd ..
 
 # 4. Deploy med_reminder
@@ -145,7 +189,7 @@ fi
 ADDRESSES[med_reminder]="$MED_REMINDER"
 echo -e "${GREEN}✅ med_reminder deployed: $MED_REMINDER${NC}"
 echo -e "${GREEN}   Extrinsic: $EXTRINSIC_HASH${NC}"
-echo -e "${YELLOW}   Verify at: https://polkadot.subscan.io/extrinsic/$EXTRINSIC_HASH${NC}"
+echo -e "${YELLOW}   Verify at: $SUBSCAN_BASE/extrinsic/$EXTRINSIC_HASH${NC}"
 cd ../..
 
 # 5. Deploy step_counter
@@ -172,7 +216,7 @@ fi
 ADDRESSES[step_counter]="$STEP_COUNTER"
 echo -e "${GREEN}✅ step_counter deployed: $STEP_COUNTER${NC}"
 echo -e "${GREEN}   Extrinsic: $EXTRINSIC_HASH${NC}"
-echo -e "${YELLOW}   Verify at: https://polkadot.subscan.io/extrinsic/$EXTRINSIC_HASH${NC}"
+echo -e "${YELLOW}   Verify at: $SUBSCAN_BASE/extrinsic/$EXTRINSIC_HASH${NC}"
 cd ../..
 
 # 6. Deploy zk_camera
@@ -199,7 +243,7 @@ fi
 ADDRESSES[zk_camera]="$ZK_CAMERA"
 echo -e "${GREEN}✅ zk_camera deployed: $ZK_CAMERA${NC}"
 echo -e "${GREEN}   Extrinsic: $EXTRINSIC_HASH${NC}"
-echo -e "${YELLOW}   Verify at: https://polkadot.subscan.io/extrinsic/$EXTRINSIC_HASH${NC}"
+echo -e "${YELLOW}   Verify at: $SUBSCAN_BASE/extrinsic/$EXTRINSIC_HASH${NC}"
 cd ../..
 
 # 7. Deploy governance
@@ -226,7 +270,7 @@ fi
 ADDRESSES[governance]="$GOVERNANCE"
 echo -e "${GREEN}✅ governance deployed: $GOVERNANCE${NC}"
 echo -e "${GREEN}   Extrinsic: $EXTRINSIC_HASH${NC}"
-echo -e "${YELLOW}   Verify at: https://polkadot.subscan.io/extrinsic/$EXTRINSIC_HASH${NC}"
+echo -e "${YELLOW}   Verify at: $SUBSCAN_BASE/extrinsic/$EXTRINSIC_HASH${NC}"
 cd ../..
 
 # Save addresses to JSON file

@@ -1,0 +1,900 @@
+{
+  "source": {
+    "hash": "0xd7204ae18b45031744aa6dcd1fa51d5fccfd957536a230e6325698ef5b7162b2",
+    "language": "ink! 5.1.1",
+    "compiler": "rustc 1.91.1",
+    "build_info": {
+      "build_mode": "Release",
+      "cargo_contract_version": "4.1.3",
+      "rust_toolchain": "stable-aarch64-apple-darwin",
+      "wasm_opt_settings": {
+        "keep_debug_symbols": false,
+        "optimization_passes": "Z"
+      }
+    }
+  },
+  "contract": {
+    "name": "zk_camera",
+    "version": "0.1.0",
+    "authors": [
+      "[your_name] <[your_email]>"
+    ]
+  },
+  "image": null,
+  "spec": {
+    "constructors": [
+      {
+        "args": [
+          {
+            "label": "admin",
+            "type": {
+              "displayName": [
+                "AccountId"
+              ],
+              "type": 0
+            }
+          }
+        ],
+        "default": false,
+        "docs": [],
+        "label": "new",
+        "payable": false,
+        "returnType": {
+          "displayName": [
+            "ink_primitives",
+            "ConstructorResult"
+          ],
+          "type": 14
+        },
+        "selector": "0x9bae9d5e"
+      }
+    ],
+    "docs": [],
+    "environment": {
+      "accountId": {
+        "displayName": [
+          "AccountId"
+        ],
+        "type": 0
+      },
+      "balance": {
+        "displayName": [
+          "Balance"
+        ],
+        "type": 24
+      },
+      "blockNumber": {
+        "displayName": [
+          "BlockNumber"
+        ],
+        "type": 26
+      },
+      "chainExtension": {
+        "displayName": [
+          "ChainExtension"
+        ],
+        "type": 27
+      },
+      "hash": {
+        "displayName": [
+          "Hash"
+        ],
+        "type": 25
+      },
+      "maxEventTopics": 4,
+      "staticBufferSize": 16384,
+      "timestamp": {
+        "displayName": [
+          "Timestamp"
+        ],
+        "type": 9
+      }
+    },
+    "events": [
+      {
+        "args": [
+          {
+            "docs": [],
+            "indexed": false,
+            "label": "patient",
+            "type": {
+              "displayName": [
+                "AccountId"
+              ],
+              "type": 0
+            }
+          },
+          {
+            "docs": [],
+            "indexed": false,
+            "label": "timestamp",
+            "type": {
+              "displayName": [
+                "u64"
+              ],
+              "type": 9
+            }
+          }
+        ],
+        "docs": [],
+        "label": "ProofSubmitted",
+        "module_path": "zk_camera::zk_camera",
+        "signature_topic": "0xecf34f38f82e5e2cd9daae8a6070377f29934eddb90db6de0ae4e5e93d5a53d5"
+      }
+    ],
+    "lang_error": {
+      "displayName": [
+        "ink",
+        "LangError"
+      ],
+      "type": 15
+    },
+    "messages": [
+      {
+        "args": [
+          {
+            "label": "patient",
+            "type": {
+              "displayName": [
+                "AccountId"
+              ],
+              "type": 0
+            }
+          },
+          {
+            "label": "proof_bytes",
+            "type": {
+              "displayName": [
+                "Vec"
+              ],
+              "type": 3
+            }
+          },
+          {
+            "label": "timestamp",
+            "type": {
+              "displayName": [
+                "u64"
+              ],
+              "type": 9
+            }
+          }
+        ],
+        "default": false,
+        "docs": [],
+        "label": "submit_proof",
+        "mutates": true,
+        "payable": false,
+        "returnType": {
+          "displayName": [
+            "ink",
+            "MessageResult"
+          ],
+          "type": 16
+        },
+        "selector": "0xc3c1b770"
+      },
+      {
+        "args": [
+          {
+            "label": "patient",
+            "type": {
+              "displayName": [
+                "AccountId"
+              ],
+              "type": 0
+            }
+          }
+        ],
+        "default": false,
+        "docs": [],
+        "label": "verify_proof",
+        "mutates": false,
+        "payable": false,
+        "returnType": {
+          "displayName": [
+            "ink",
+            "MessageResult"
+          ],
+          "type": 19
+        },
+        "selector": "0x71c9d9ba"
+      },
+      {
+        "args": [
+          {
+            "label": "patient",
+            "type": {
+              "displayName": [
+                "AccountId"
+              ],
+              "type": 0
+            }
+          }
+        ],
+        "default": false,
+        "docs": [],
+        "label": "get_proof",
+        "mutates": false,
+        "payable": false,
+        "returnType": {
+          "displayName": [
+            "ink",
+            "MessageResult"
+          ],
+          "type": 21
+        },
+        "selector": "0xbe8a6a9b"
+      }
+    ]
+  },
+  "storage": {
+    "root": {
+      "layout": {
+        "struct": {
+          "fields": [
+            {
+              "layout": {
+                "leaf": {
+                  "key": "0x00000000",
+                  "ty": 0
+                }
+              },
+              "name": "admin"
+            },
+            {
+              "layout": {
+                "root": {
+                  "layout": {
+                    "leaf": {
+                      "key": "0x3df08fdb",
+                      "ty": 3
+                    }
+                  },
+                  "root_key": "0x3df08fdb",
+                  "ty": 4
+                }
+              },
+              "name": "proof_bytes"
+            },
+            {
+              "layout": {
+                "root": {
+                  "layout": {
+                    "leaf": {
+                      "key": "0x48a9deb7",
+                      "ty": 9
+                    }
+                  },
+                  "root_key": "0x48a9deb7",
+                  "ty": 10
+                }
+              },
+              "name": "timestamps"
+            }
+          ],
+          "name": "ZkCamera"
+        }
+      },
+      "root_key": "0x00000000",
+      "ty": 13
+    }
+  },
+  "types": [
+    {
+      "id": 0,
+      "type": {
+        "def": {
+          "composite": {
+            "fields": [
+              {
+                "type": 1,
+                "typeName": "[u8; 32]"
+              }
+            ]
+          }
+        },
+        "path": [
+          "ink_primitives",
+          "types",
+          "AccountId"
+        ]
+      }
+    },
+    {
+      "id": 1,
+      "type": {
+        "def": {
+          "array": {
+            "len": 32,
+            "type": 2
+          }
+        }
+      }
+    },
+    {
+      "id": 2,
+      "type": {
+        "def": {
+          "primitive": "u8"
+        }
+      }
+    },
+    {
+      "id": 3,
+      "type": {
+        "def": {
+          "sequence": {
+            "type": 2
+          }
+        }
+      }
+    },
+    {
+      "id": 4,
+      "type": {
+        "def": {
+          "composite": {}
+        },
+        "params": [
+          {
+            "name": "K",
+            "type": 0
+          },
+          {
+            "name": "V",
+            "type": 3
+          },
+          {
+            "name": "KeyType",
+            "type": 5
+          }
+        ],
+        "path": [
+          "ink_storage",
+          "lazy",
+          "mapping",
+          "Mapping"
+        ]
+      }
+    },
+    {
+      "id": 5,
+      "type": {
+        "def": {
+          "composite": {}
+        },
+        "params": [
+          {
+            "name": "L",
+            "type": 6
+          },
+          {
+            "name": "R",
+            "type": 7
+          }
+        ],
+        "path": [
+          "ink_storage_traits",
+          "impls",
+          "ResolverKey"
+        ]
+      }
+    },
+    {
+      "id": 6,
+      "type": {
+        "def": {
+          "composite": {}
+        },
+        "path": [
+          "ink_storage_traits",
+          "impls",
+          "AutoKey"
+        ]
+      }
+    },
+    {
+      "id": 7,
+      "type": {
+        "def": {
+          "composite": {}
+        },
+        "params": [
+          {
+            "name": "ParentKey",
+            "type": 8
+          }
+        ],
+        "path": [
+          "ink_storage_traits",
+          "impls",
+          "ManualKey"
+        ]
+      }
+    },
+    {
+      "id": 8,
+      "type": {
+        "def": {
+          "tuple": []
+        }
+      }
+    },
+    {
+      "id": 9,
+      "type": {
+        "def": {
+          "primitive": "u64"
+        }
+      }
+    },
+    {
+      "id": 10,
+      "type": {
+        "def": {
+          "composite": {}
+        },
+        "params": [
+          {
+            "name": "K",
+            "type": 0
+          },
+          {
+            "name": "V",
+            "type": 9
+          },
+          {
+            "name": "KeyType",
+            "type": 11
+          }
+        ],
+        "path": [
+          "ink_storage",
+          "lazy",
+          "mapping",
+          "Mapping"
+        ]
+      }
+    },
+    {
+      "id": 11,
+      "type": {
+        "def": {
+          "composite": {}
+        },
+        "params": [
+          {
+            "name": "L",
+            "type": 6
+          },
+          {
+            "name": "R",
+            "type": 12
+          }
+        ],
+        "path": [
+          "ink_storage_traits",
+          "impls",
+          "ResolverKey"
+        ]
+      }
+    },
+    {
+      "id": 12,
+      "type": {
+        "def": {
+          "composite": {}
+        },
+        "params": [
+          {
+            "name": "ParentKey",
+            "type": 8
+          }
+        ],
+        "path": [
+          "ink_storage_traits",
+          "impls",
+          "ManualKey"
+        ]
+      }
+    },
+    {
+      "id": 13,
+      "type": {
+        "def": {
+          "composite": {
+            "fields": [
+              {
+                "name": "admin",
+                "type": 0,
+                "typeName": "<AccountId as::ink::storage::traits::AutoStorableHint<::ink::\nstorage::traits::ManualKey<1522386777u32, ()>,>>::Type"
+              },
+              {
+                "name": "proof_bytes",
+                "type": 4,
+                "typeName": "<Mapping<AccountId, Vec<u8>> as::ink::storage::traits::\nAutoStorableHint<::ink::storage::traits::ManualKey<3683643453u32,\n()>,>>::Type"
+              },
+              {
+                "name": "timestamps",
+                "type": 10,
+                "typeName": "<Mapping<AccountId, u64> as::ink::storage::traits::\nAutoStorableHint<::ink::storage::traits::ManualKey<3084822856u32,\n()>,>>::Type"
+              }
+            ]
+          }
+        },
+        "path": [
+          "zk_camera",
+          "zk_camera",
+          "ZkCamera"
+        ]
+      }
+    },
+    {
+      "id": 14,
+      "type": {
+        "def": {
+          "variant": {
+            "variants": [
+              {
+                "fields": [
+                  {
+                    "type": 8
+                  }
+                ],
+                "index": 0,
+                "name": "Ok"
+              },
+              {
+                "fields": [
+                  {
+                    "type": 15
+                  }
+                ],
+                "index": 1,
+                "name": "Err"
+              }
+            ]
+          }
+        },
+        "params": [
+          {
+            "name": "T",
+            "type": 8
+          },
+          {
+            "name": "E",
+            "type": 15
+          }
+        ],
+        "path": [
+          "Result"
+        ]
+      }
+    },
+    {
+      "id": 15,
+      "type": {
+        "def": {
+          "variant": {
+            "variants": [
+              {
+                "index": 1,
+                "name": "CouldNotReadInput"
+              }
+            ]
+          }
+        },
+        "path": [
+          "ink_primitives",
+          "LangError"
+        ]
+      }
+    },
+    {
+      "id": 16,
+      "type": {
+        "def": {
+          "variant": {
+            "variants": [
+              {
+                "fields": [
+                  {
+                    "type": 17
+                  }
+                ],
+                "index": 0,
+                "name": "Ok"
+              },
+              {
+                "fields": [
+                  {
+                    "type": 15
+                  }
+                ],
+                "index": 1,
+                "name": "Err"
+              }
+            ]
+          }
+        },
+        "params": [
+          {
+            "name": "T",
+            "type": 17
+          },
+          {
+            "name": "E",
+            "type": 15
+          }
+        ],
+        "path": [
+          "Result"
+        ]
+      }
+    },
+    {
+      "id": 17,
+      "type": {
+        "def": {
+          "variant": {
+            "variants": [
+              {
+                "fields": [
+                  {
+                    "type": 8
+                  }
+                ],
+                "index": 0,
+                "name": "Ok"
+              },
+              {
+                "fields": [
+                  {
+                    "type": 18
+                  }
+                ],
+                "index": 1,
+                "name": "Err"
+              }
+            ]
+          }
+        },
+        "params": [
+          {
+            "name": "T",
+            "type": 8
+          },
+          {
+            "name": "E",
+            "type": 18
+          }
+        ],
+        "path": [
+          "Result"
+        ]
+      }
+    },
+    {
+      "id": 18,
+      "type": {
+        "def": {
+          "variant": {
+            "variants": [
+              {
+                "index": 0,
+                "name": "Unauthorised"
+              }
+            ]
+          }
+        },
+        "path": [
+          "zk_camera",
+          "zk_camera",
+          "Error"
+        ]
+      }
+    },
+    {
+      "id": 19,
+      "type": {
+        "def": {
+          "variant": {
+            "variants": [
+              {
+                "fields": [
+                  {
+                    "type": 20
+                  }
+                ],
+                "index": 0,
+                "name": "Ok"
+              },
+              {
+                "fields": [
+                  {
+                    "type": 15
+                  }
+                ],
+                "index": 1,
+                "name": "Err"
+              }
+            ]
+          }
+        },
+        "params": [
+          {
+            "name": "T",
+            "type": 20
+          },
+          {
+            "name": "E",
+            "type": 15
+          }
+        ],
+        "path": [
+          "Result"
+        ]
+      }
+    },
+    {
+      "id": 20,
+      "type": {
+        "def": {
+          "primitive": "bool"
+        }
+      }
+    },
+    {
+      "id": 21,
+      "type": {
+        "def": {
+          "variant": {
+            "variants": [
+              {
+                "fields": [
+                  {
+                    "type": 22
+                  }
+                ],
+                "index": 0,
+                "name": "Ok"
+              },
+              {
+                "fields": [
+                  {
+                    "type": 15
+                  }
+                ],
+                "index": 1,
+                "name": "Err"
+              }
+            ]
+          }
+        },
+        "params": [
+          {
+            "name": "T",
+            "type": 22
+          },
+          {
+            "name": "E",
+            "type": 15
+          }
+        ],
+        "path": [
+          "Result"
+        ]
+      }
+    },
+    {
+      "id": 22,
+      "type": {
+        "def": {
+          "variant": {
+            "variants": [
+              {
+                "index": 0,
+                "name": "None"
+              },
+              {
+                "fields": [
+                  {
+                    "type": 23
+                  }
+                ],
+                "index": 1,
+                "name": "Some"
+              }
+            ]
+          }
+        },
+        "params": [
+          {
+            "name": "T",
+            "type": 23
+          }
+        ],
+        "path": [
+          "Option"
+        ]
+      }
+    },
+    {
+      "id": 23,
+      "type": {
+        "def": {
+          "composite": {
+            "fields": [
+              {
+                "name": "proof_bytes",
+                "type": 3,
+                "typeName": "Vec<u8>"
+              },
+              {
+                "name": "timestamp",
+                "type": 9,
+                "typeName": "u64"
+              }
+            ]
+          }
+        },
+        "path": [
+          "zk_camera",
+          "zk_camera",
+          "ZkProof"
+        ]
+      }
+    },
+    {
+      "id": 24,
+      "type": {
+        "def": {
+          "primitive": "u128"
+        }
+      }
+    },
+    {
+      "id": 25,
+      "type": {
+        "def": {
+          "composite": {
+            "fields": [
+              {
+                "type": 1,
+                "typeName": "[u8; 32]"
+              }
+            ]
+          }
+        },
+        "path": [
+          "ink_primitives",
+          "types",
+          "Hash"
+        ]
+      }
+    },
+    {
+      "id": 26,
+      "type": {
+        "def": {
+          "primitive": "u32"
+        }
+      }
+    },
+    {
+      "id": 27,
+      "type": {
+        "def": {
+          "variant": {}
+        },
+        "path": [
+          "ink_env",
+          "types",
+          "NoChainExtension"
+        ]
+      }
+    }
+  ],
+  "version": 5
+}

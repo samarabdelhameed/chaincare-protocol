@@ -142,6 +142,225 @@
 
 ---
 
+## 📖 Smart Contract API Documentation
+
+Complete API reference for all ChainCARE Protocol smart contracts. For detailed documentation, see [CONTRACT_API.md](./CONTRACT_API.md).
+
+### `care_space` Contract
+
+| Message              | Params               | Description            |
+| -------------------- | -------------------- | ---------------------- |
+| `new()`              | `owner`, `name`, `patient`, `treasury`, `sbt` | Creates a new CareSpace instance |
+| `install_plugin()`   | `name`, `account`    | Installs a plugin contract |
+| `get_plugin()`       | `name`               | Returns plugin address by name |
+| `who_is_patient()`   | -                    | Returns patient's wallet address |
+
+**Events**: `PluginInstalled { name, account }`
+
+### `health_sbt` Contract
+
+| Message              | Params            | Description      |
+| -------------------- | ----------------- | ---------------- |
+| `new()`              | `owner`           | Creates Health-SBT contract |
+| `mint()`             | `to`, `metadata`  | إصدار Health-SBT للمريض |
+| `owner_of()`         | `account`         | إرجاع metadata + timestamp |
+| `is_holder()`        | `account`         | التحقق من وجود SBT |
+
+**Events**: `Minted { to, metadata }`  
+**Errors**: `Unauthorised`, `AlreadyExists`
+
+### `care_treasury` Contract
+
+| Message              | Params               | Description            |
+| -------------------- | -------------------- | ---------------------- |
+| `new()`              | `admin`, `daily_rate` | Creates treasury with daily yield rate |
+| `deposit()`          | - (payable)          | تبرع يدخل الـ treasury |
+| `distribute_yield()`  | `compliant_patients[]` | يحسب ويصرف yield للمرضى الملتزمين |
+| `claim()`            | -                    | المريض يسحب المكافآت المتراكمة |
+| `balance_of()`       | `account`            | إرجاع الرصيد المتراكم |
+
+**Events**: `Deposited { from, amount }`, `YieldPaid { to, amount }`  
+**Errors**: `ZeroClaim`, `TransferFailed`
+
+### `med_reminder` Plugin
+
+| Message              | Params            | Description      |
+| -------------------- | ----------------- | ---------------- |
+| `new()`              | `med_id`          | Creates reminder for medication |
+| `check_in()`         | `timestamp`       | تسجيل تناول الدواء |
+| `last_taken()`       | -                 | آخر مرة تم تناول الدواء |
+| `med_id()`           | -                 | معرف الدواء |
+
+**Events**: `MedTaken { med_id, timestamp }`
+
+### `zk_camera` Plugin
+
+| Message              | Params            | Description      |
+| -------------------- | ----------------- | ---------------- |
+| `new()`              | `admin`           | Creates ZK Camera instance |
+| `submit_proof()`     | `patient`, `proof_bytes`, `timestamp` | إرسال zk-proof للتحقق |
+| `verify_proof()`     | `patient`         | التحقق من وجود proof |
+| `get_proof()`        | `patient`         | إرجاع proof data |
+
+**Events**: `ProofSubmitted { patient, timestamp }`  
+**Errors**: `Unauthorised`
+
+### `step_counter` Plugin
+
+| Message              | Params            | Description      |
+| -------------------- | ----------------- | ---------------- |
+| `new()`              | `admin`, `daily_target` | Creates step counter |
+| `submit_oracle()`    | `patient`, `steps`, `date` | Oracle يرسل عدد الخطوات |
+| `get_steps()`        | `patient`         | إرجاع عدد الخطوات |
+| `is_target_met()`    | `patient`         | التحقق من تحقيق الهدف |
+
+**Events**: `StepsRecorded { patient, steps, date }`  
+**Errors**: `Unauthorised`
+
+### `governance` Plugin
+
+| Message              | Params            | Description      |
+| -------------------- | ----------------- | ---------------- |
+| `new()`              | `admin`           | Creates governance instance |
+| `create_proposal()`  | `description`     | إنشاء اقتراح جديد |
+| `vote()`             | `id`, `vote`       | التصويت على اقتراح |
+| `get_proposal()`     | `id`               | إرجاع تفاصيل الاقتراح |
+| `has_voted()`        | `id`, `voter`      | التحقق من التصويت |
+
+**Events**: `ProposalCreated { id, description }`, `Voted { id, voter, vote }`  
+**Errors**: `Unauthorised`, `AlreadyVoted`, `NotFound`, `Inactive`
+
+---
+
+## 🎬 Example Patient Journey (On-Chain Only)
+
+### Complete Sequence Example
+
+This example demonstrates a complete patient journey using only on-chain smart contract calls.
+
+#### 1. الطبيب ينشئ CareSpace
+
+```bash
+# Deploy CareSpace contract
+care_space::new(
+    owner: "5GrwvaEF5zXb26Fz9rcQpDWS57CtERHpNehXCPcNoHGKutQY",
+    name: "Sara's CareSpace",
+    patient: "5FHneW46xGXgs5mUiveU4sbTyGBzmstUspZC92UhjJM694ty",
+    treasury: "5FLSigC9HGRKVhB9F7RSwF7q8v9i3kvePkdXh8X5VWseuZWZ",
+    sbt: "5DAAnrj7VHTznn2AWBemMuyBwZWs6F4j5oPydkhPAiXqGkSd"
+)
+```
+
+#### 2. يصدر Health-SBT
+
+```bash
+health_sbt::mint(
+    to: "5FHneW46xGXgs5mUiveU4sbTyGBzmstUspZC92UhjJM694ty",
+    metadata: '{"diagnosis": "Type-2 Diabetes", "medications": [{"name": "Metformin", "dose": "500mg", "frequency": "twice daily"}], "target_steps": 6000, "care_plan_duration": 30}'
+)
+```
+
+**Event Emitted**: `Minted { to: "5FHneW...", metadata: "..." }`
+
+#### 3. المريض يأخذ دواءه (IoT → on-chain)
+
+```bash
+med_reminder::check_in(
+    timestamp: 1712345678  # Unix timestamp
+)
+```
+
+**Event Emitted**: `MedTaken { med_id: "metformin_500mg", timestamp: 1712345678 }`
+
+#### 4. zk-Proof Submission
+
+```bash
+zk_camera::submit_proof(
+    patient: "5FHneW46xGXgs5mUiveU4sbTyGBzmstUspZC92UhjJM694ty",
+    proof_bytes: [0x12, 0x34, ...],  # Serialized Groth16 proof
+    timestamp: 1712345678
+)
+```
+
+**Event Emitted**: `ProofSubmitted { patient: "5FHneW...", timestamp: 1712345678 }`
+
+#### 5. Step Counter Oracle Submission
+
+```bash
+step_counter::submit_oracle(
+    patient: "5FHneW46xGXgs5mUiveU4sbTyGBzmstUspZC92UhjJM694ty",
+    steps: 7500,
+    date: 1712345678
+)
+```
+
+**Event Emitted**: `StepsRecorded { patient: "5FHneW...", steps: 7500, date: 1712345678 }`
+
+#### 6. Yield Distribution (Admin/Oracle)
+
+```bash
+care_treasury::distribute_yield(
+    compliant_patients: [
+        "5FHneW46xGXgs5mUiveU4sbTyGBzmstUspZC92UhjJM694ty",
+        "5GrwvaEF5zXb26Fz9rcQpDWS57CtERHpNehXCPcNoHGKutQY"
+    ]
+)
+```
+
+**Calculation**:
+- Treasury balance: 1000 DOT
+- Daily rate: 20 (0.002% daily)
+- Daily pool: 1000 * 20 / 1_000_000 = 0.02 DOT
+- Yield per patient: 0.02 / 2 = 0.01 DOT
+
+#### 7. Patient Claims Yield
+
+```bash
+care_treasury::claim()
+```
+
+**Event Emitted**: `YieldPaid { to: "5FHneW...", amount: 10000000000000 }` (0.01 DOT)
+
+#### 8. Governance: Treatment Plan Change
+
+```bash
+# Doctor creates proposal
+governance::create_proposal(
+    description: "Change Metformin dose from 500mg to 1000mg twice daily"
+)
+# Returns: proposal_id = 1
+
+# Patient votes
+governance::vote(
+    id: 1,
+    vote: true  # For
+)
+
+# Family member 1 votes
+governance::vote(
+    id: 1,
+    vote: true  # For
+)
+
+# Family member 2 votes
+governance::vote(
+    id: 1,
+    vote: false  # Against
+)
+
+# Check proposal status
+governance::get_proposal(1)
+# Returns: Proposal { description: "...", votes_for: 2, votes_against: 1, active: true }
+```
+
+**Events Emitted**: 
+- `ProposalCreated { id: 1, description: "..." }`
+- `Voted { id: 1, voter: "5FHneW...", vote: true }`
+- `Voted { id: 1, voter: "5Grwva...", vote: true }`
+- `Voted { id: 1, voter: "5DAAnr...", vote: false }`
+
+---
+
 ## 🏗️ Architecture & Integration
 
 ### Polkadot Integration Deep Dive
@@ -237,7 +456,11 @@ For a comprehensive technical deep-dive into the ChainCARE architecture, includi
 
 ### Blockchain Layer
 - **Smart Contracts**: ink! 4.2 (Rust)
-- **Network**: Astar Shibuya Testnet → Polkadot Mainnet (Future)
+- **Network**: **Paseo Testnet** (Official Community Testnet) → Polkadot Mainnet (Future)
+  - **RPC**: `wss://rpc.ibp.network/paseo`
+  - **Faucet**: https://faucet.paseo.io
+  - **Explorer**: Polkaholic / Subscan (if available)
+- **Alternative Networks**: Astar Shibuya, Polkadot Testnet
 - **RPC**: WebSocket connection via `@polkadot/api`
 - **Wallet Integration**: Polkadot-js Extension
 
@@ -310,27 +533,57 @@ cd contracts && cargo build --release
 cd ../frontend && npm install
 ```
 
-### 2. Deploy Contracts (Astar Shibuya)
+### 2. Configure Environment for Paseo Testnet
+
+Create `contracts/.env` file with Paseo settings:
 
 ```bash
 cd contracts
 
-# Set your mnemonic in .env
-cp .env.example .env
-# Edit .env: MNEMONIC=your twelve word phrase
+# Create .env file
+cat > .env <<EOF
+# Paseo Testnet (Official Community Testnet)
+RPC_URL=wss://rpc.ibp.network/paseo
+MNEMONIC="your twelve word mnemonic phrase here"
+ADDRESS=your_account_address
+GAS_LIMIT=1000000000000
+VITE_WS_URL=wss://rpc.ibp.network/paseo
+NETWORK=paseo
 
-# Deploy all contracts
-./deploy-all.sh
+# Contract settings
+HEALTH_SBT_ADMIN=your_address
+TREASURY_ADMIN=your_address
+TREASURY_DAILY_RATE=20
+CARE_SPACE_OWNER=your_address
+CARE_SPACE_PATIENT=your_address
+CARE_SPACE_NAME="CareSpace#1"
+MED_REMINDER_MED_ID="med_001"
+EOF
 ```
 
-This will deploy:
-- `health_sbt` → Address saved to `frontend/src/addresses.shibuya.json`
+**Get PAS tokens from faucet:** https://faucet.paseo.io
+
+### 3. Deploy Contracts (Paseo Testnet)
+
+```bash
+# From project root
+./scripts/deploy-and-verify-paseo.sh
+```
+
+This will deploy and verify:
+- `health_sbt` → Address saved to `frontend/src/addresses.paseo.json`
 - `care_treasury` → Address saved
 - `care_space` → Address saved
 - `med_reminder` → Address saved
-- Other plugins...
+- `step_counter` → Address saved
+- `zk_camera` → Address saved
+- `governance` → Address saved
 
-### 3. Run Frontend
+**Alternative Networks:**
+- **Astar Shibuya**: `./scripts/deploy-shibuya.sh`
+- **Polkadot Testnet**: `./scripts/deploy-polkadot-testnet.sh`
+
+### 4. Run Frontend
 
 ```bash
 cd frontend
@@ -339,12 +592,213 @@ npm run dev
 
 Open `http://localhost:3000` → Connect Polkadot-js wallet → Start using ChainCARE!
 
-### 4. Run Oracle (Optional)
+### 5. Run Tests
+
+```bash
+cd contracts
+
+# Run all tests
+cargo test
+
+# Run specific contract tests
+cargo test --package health_sbt
+cargo test --package care_treasury
+cargo test --package med_reminder
+```
+
+**Test Coverage:**
+- ✅ Health-SBT minting and authorization
+- ✅ Treasury deposit, yield distribution, and claim
+- ✅ Medication reminder check-in
+- ✅ Error handling (Unauthorised, AlreadyExists, ZeroClaim)
+
+**Test Files:**
+- `contracts/tests/health_sbt_test.rs`
+- `contracts/tests/care_treasury_test.rs`
+- `contracts/tests/med_reminder_test.rs`
+
+### 6. Verify Contracts
+
+After deployment, verify contracts on block explorer:
+
+1. Open contract page on **Polkaholic** or **Subscan** (if available)
+2. Click **"Verify & Publish"**
+3. Upload `.contract` file from `contracts/target/ink/CONTRACT_NAME/`
+4. Select Runtime: **ink! 4.2**
+5. Click **Verify**
+
+**Contract files location:**
+- `contracts/target/ink/health_sbt/health_sbt.contract`
+- `contracts/target/ink/care_treasury/care_treasury.contract`
+- `contracts/target/ink/care_space/care_space.contract`
+- `contracts/target/ink/plugins/med_reminder/med_reminder.contract`
+- `contracts/target/ink/plugins/step_counter/step_counter.contract`
+- `contracts/target/ink/plugins/zk_camera/zk_camera.contract`
+- `contracts/target/ink/plugins/governance/governance.contract`
+
+**View on Polkadot.js Apps:**
+- **Paseo**: https://polkadot.js.org/apps/?rpc=wss%3A%2F%2Frpc.ibp.network%2Fpaseo#/contracts
+- **Shibuya**: https://polkadot.js.org/apps/?rpc=wss%3A%2F%2Frpc.shibuya.astar.network#/contracts
+
+### 6. Run Oracle (Optional)
 
 ```bash
 cd oracle
 pip install -r requirements.txt
 python oracle.py
+```
+
+---
+
+## 📌 Deployment & Verification
+
+### 📊 Smart Contract Information (For Judges)
+
+Complete deployment and verification information for all ChainCARE Protocol smart contracts.
+
+#### 1. Contract CodeHashes
+
+CodeHash for each contract (extracted from built artifacts):
+
+| Contract | CodeHash |
+|----------|----------|
+| **CareSpace** | `0xe4b150f3f0348e383bf483d2a6cd770f9ec46b9caac5132e83ea6b5832b4c693` |
+| **HealthSBT** | `0xf8ccd6283eaf840aedc514bbe632d75a0c3c665e0f86168ac22fb00a1e9bcd99` |
+| **CareTreasury** | `0x9c408f7135754b8a7f864beafde1151e696d4a08e8e2296df9d15239aff2aa29` |
+| **MedReminder** | `0x13835bc83fcc1afb33d7d7c51ccb64ffd003cfb7cae99f1f5b5caf85955bc194` |
+| **ZkCamera** | `0xd7204ae18b45031744aa6dcd1fa51d5fccfd957536a230e6325698ef5b7162b2` |
+| **StepCounter** | `0xcab1fd44993a0a5fa3fc7048c188d183f4a11c44a0b1bb6a3128528523f5e576` |
+| **Governance** | `0xbd8785087e0d92abfdd96d72bde760fe07bf44095c74a86f6d5c7a215f4f83b9` |
+
+> **Source**: CodeHashes extracted from `contracts/target/ink/<contract>/<contract>.json` → `source.hash`
+
+#### 2. Network RPC Endpoints
+
+| Network | RPC URL | Status |
+|---------|---------|--------|
+| **Paseo Testnet** | `wss://rpc.ibp.network/paseo` | ✅ Active |
+| **Astar Shibuya** | `wss://rpc.shibuya.astar.network` | ✅ Active |
+| **Polkadot Testnet** | `wss://rpc.polkadot.io` | ✅ Active |
+
+#### 3. Block Explorers & Tools
+
+| Network | Explorer | Polkadot.js Apps | Faucet |
+|---------|----------|-------------------|--------|
+| **Paseo** | Polkaholic | [View Contracts](https://polkadot.js.org/apps/?rpc=wss%3A%2F%2Frpc.ibp.network%2Fpaseo#/contracts) | [Get Tokens](https://faucet.paseo.io) |
+| **Shibuya** | [Subscan](https://shibuya.subscan.io) | [View Contracts](https://polkadot.js.org/apps/?rpc=wss%3A%2F%2Frpc.shibuya.astar.network#/contracts) | [Get Tokens](https://portal.astar.network/astar/faucet) |
+| **Polkadot** | [Subscan](https://polkadot.subscan.io) | [View Contracts](https://polkadot.js.org/apps/?rpc=wss%3A%2F%2Frpc.polkadot.io#/contracts) | - |
+
+#### 4. Contract Artifacts Location
+
+| Artifact Type | Location | Count |
+|---------------|----------|-------|
+| **`.contract` files** | `contracts/target/ink/<contract>/` | 7 files |
+| **`.json` metadata** | `contracts/target/ink/<contract>/` | 7 files |
+| **`.wasm` bytecode** | `contracts/target/ink/<contract>/` | 7 files |
+| **Copied artifacts** | `contracts-artifacts/` | 21 files |
+
+#### 5. Contract Deployment Status
+
+| Contract | Status | Artifacts Ready | CodeHash Verified |
+|----------|--------|-----------------|-------------------|
+| **CareSpace** | ✅ Built | ✅ Yes | ✅ Yes |
+| **HealthSBT** | ✅ Built | ✅ Yes | ✅ Yes |
+| **CareTreasury** | ✅ Built | ✅ Yes | ✅ Yes |
+| **MedReminder** | ✅ Built | ✅ Yes | ✅ Yes |
+| **ZkCamera** | ✅ Built | ✅ Yes | ✅ Yes |
+| **StepCounter** | ✅ Built | ✅ Yes | ✅ Yes |
+| **Governance** | ✅ Built | ✅ Yes | ✅ Yes |
+
+> **Note**: All contracts are built and ready for deployment. Contract addresses will be added after deployment on testnet.
+
+### Contract Artifacts
+
+All contract artifacts are available in:
+- **Source**: `contracts/target/ink/<contract>/`
+- **Copied to**: `contracts-artifacts/`
+
+**Files per contract**:
+- `<contract>.contract` - Complete bundle (metadata + WASM)
+- `<contract>.json` - Contract metadata (ABI)
+- `<contract>.wasm` - Compiled WASM bytecode
+
+### Deployment Template
+
+After deploying contracts, fill in the following information:
+
+```
+Contract: [ContractName]
+Network: [Shibuya/Paseo/Polkadot Testnet]
+Deployer: [YOUR_ACCOUNT_ADDRESS]
+CodeHash: [FROM_ABOVE_TABLE]
+Address: [DEPLOYED_CONTRACT_ADDRESS]
+Block: [BLOCK_NUMBER]
+Extrinsic: [TRANSACTION_HASH]
+Timestamp: [DEPLOYMENT_TIMESTAMP]
+
+Subscan: https://shibuya.subscan.io/account/[ADDRESS]
+Polkadot.js: https://polkadot.js.org/apps/?rpc=...#/contracts/inspect/[ADDRESS]
+```
+
+### 📋 Verification Checklist
+
+Use this checklist to verify contracts after deployment:
+
+- [ ] Contract deployed on testnet
+- [ ] CodeHash matches table above
+- [ ] Contract address recorded
+- [ ] Transaction hash saved
+- [ ] Verified on Polkadot.js Apps
+- [ ] Verified on Subscan (if available)
+- [ ] Contract messages tested
+- [ ] Events emitted correctly
+
+### Verification Steps
+
+1. **Upload Contract to Polkadot.js Apps**:
+   - Navigate to Contracts → Upload WASM
+   - Upload `.contract` file from `contracts-artifacts/`
+   - Verify code hash matches table above
+
+2. **Verify on Subscan** (if available):
+   - Go to contract address page
+   - Click "Verify & Publish"
+   - Upload `.contract` file
+   - Select Runtime: **ink! 4.2** (or **ink! 5.1.1** if applicable)
+
+3. **Test Contract Messages**:
+   - Use Polkadot.js Apps to call contract messages
+   - Verify events are emitted correctly
+   - Check storage values
+
+### 📍 Deployed Contract Addresses (To be filled after deployment)
+
+| Contract | Network | Address | CodeHash | Status |
+|----------|---------|---------|----------|--------|
+| **CareSpace** | - | `[TO_BE_FILLED]` | `0xe4b150f3f0348e383bf483d2a6cd770f9ec46b9caac5132e83ea6b5832b4c693` | ⏳ Pending |
+| **HealthSBT** | - | `[TO_BE_FILLED]` | `0xf8ccd6283eaf840aedc514bbe632d75a0c3c665e0f86168ac22fb00a1e9bcd99` | ⏳ Pending |
+| **CareTreasury** | - | `[TO_BE_FILLED]` | `0x9c408f7135754b8a7f864beafde1151e696d4a08e8e2296df9d15239aff2aa29` | ⏳ Pending |
+| **MedReminder** | - | `[TO_BE_FILLED]` | `0x13835bc83fcc1afb33d7d7c51ccb64ffd003cfb7cae99f1f5b5caf85955bc194` | ⏳ Pending |
+| **ZkCamera** | - | `[TO_BE_FILLED]` | `0xd7204ae18b45031744aa6dcd1fa51d5fccfd957536a230e6325698ef5b7162b2` | ⏳ Pending |
+| **StepCounter** | - | `[TO_BE_FILLED]` | `0xcab1fd44993a0a5fa3fc7048c188d183f4a11c44a0b1bb6a3128528523f5e576` | ⏳ Pending |
+| **Governance** | - | `[TO_BE_FILLED]` | `0xbd8785087e0d92abfdd96d72bde760fe07bf44095c74a86f6d5c7a215f4f83b9` | ⏳ Pending |
+
+### 📝 Example Deployment Record Template
+
+After deploying a contract, fill in this template:
+
+```
+Contract: HealthSBT
+Network: Shibuya Testnet
+Deployer: 5FHneW46xGXgs5mUiveU4sbTyGBzmstUspZC92UhjJM694ty
+CodeHash: 0xf8ccd6283eaf840aedc514bbe632d75a0c3c665e0f86168ac22fb00a1e9bcd99
+Address: 5DAAnrj7VHTznn2AWBemMuyBwZWs6F4j5oPydkhPAiXqGkSd
+Block: 1748392
+Extrinsic: 0x95f1a7c29a8e4b3c03e92bc96ad4cfd681cdabd1ee9a47db96bfe1b541af3c8f
+Timestamp: 2025-01-15 16:33 UTC
+
+Subscan: https://shibuya.subscan.io/account/5DAAnrj7VHTznn2AWBemMuyBwZWs6F4j5oPydkhPAiXqGkSd
+Polkadot.js: https://polkadot.js.org/apps/?rpc=wss%3A%2F%2Frpc.shibuya.astar.network#/contracts/inspect/5DAAnrj7VHTznn2AWBemMuyBwZWs6F4j5oPydkhPAiXqGkSd
 ```
 
 ---

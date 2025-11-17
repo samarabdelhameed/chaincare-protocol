@@ -1,0 +1,893 @@
+{
+  "source": {
+    "hash": "0xf8ccd6283eaf840aedc514bbe632d75a0c3c665e0f86168ac22fb00a1e9bcd99",
+    "language": "ink! 5.1.1",
+    "compiler": "rustc 1.91.1",
+    "build_info": {
+      "build_mode": "Release",
+      "cargo_contract_version": "4.1.3",
+      "rust_toolchain": "stable-aarch64-apple-darwin",
+      "wasm_opt_settings": {
+        "keep_debug_symbols": false,
+        "optimization_passes": "Z"
+      }
+    }
+  },
+  "contract": {
+    "name": "health_sbt",
+    "version": "0.1.0",
+    "authors": [
+      "[your_name] <[your_email]>"
+    ]
+  },
+  "image": null,
+  "spec": {
+    "constructors": [
+      {
+        "args": [
+          {
+            "label": "owner",
+            "type": {
+              "displayName": [
+                "AccountId"
+              ],
+              "type": 0
+            }
+          }
+        ],
+        "default": false,
+        "docs": [],
+        "label": "new",
+        "payable": false,
+        "returnType": {
+          "displayName": [
+            "ink_primitives",
+            "ConstructorResult"
+          ],
+          "type": 14
+        },
+        "selector": "0x9bae9d5e"
+      }
+    ],
+    "docs": [],
+    "environment": {
+      "accountId": {
+        "displayName": [
+          "AccountId"
+        ],
+        "type": 0
+      },
+      "balance": {
+        "displayName": [
+          "Balance"
+        ],
+        "type": 24
+      },
+      "blockNumber": {
+        "displayName": [
+          "BlockNumber"
+        ],
+        "type": 26
+      },
+      "chainExtension": {
+        "displayName": [
+          "ChainExtension"
+        ],
+        "type": 27
+      },
+      "hash": {
+        "displayName": [
+          "Hash"
+        ],
+        "type": 25
+      },
+      "maxEventTopics": 4,
+      "staticBufferSize": 16384,
+      "timestamp": {
+        "displayName": [
+          "Timestamp"
+        ],
+        "type": 9
+      }
+    },
+    "events": [
+      {
+        "args": [
+          {
+            "docs": [],
+            "indexed": false,
+            "label": "to",
+            "type": {
+              "displayName": [
+                "AccountId"
+              ],
+              "type": 0
+            }
+          },
+          {
+            "docs": [],
+            "indexed": false,
+            "label": "metadata",
+            "type": {
+              "displayName": [
+                "String"
+              ],
+              "type": 3
+            }
+          }
+        ],
+        "docs": [],
+        "label": "Minted",
+        "module_path": "health_sbt::health_sbt",
+        "signature_topic": "0x1877db3f8bf691eafdcc265fbc4513f0d6f51de46305e67828f6d46597fe0bea"
+      }
+    ],
+    "lang_error": {
+      "displayName": [
+        "ink",
+        "LangError"
+      ],
+      "type": 15
+    },
+    "messages": [
+      {
+        "args": [
+          {
+            "label": "to",
+            "type": {
+              "displayName": [
+                "AccountId"
+              ],
+              "type": 0
+            }
+          },
+          {
+            "label": "metadata",
+            "type": {
+              "displayName": [
+                "String"
+              ],
+              "type": 3
+            }
+          }
+        ],
+        "default": false,
+        "docs": [],
+        "label": "mint",
+        "mutates": true,
+        "payable": false,
+        "returnType": {
+          "displayName": [
+            "ink",
+            "MessageResult"
+          ],
+          "type": 16
+        },
+        "selector": "0xcfdd9aa2"
+      },
+      {
+        "args": [
+          {
+            "label": "account",
+            "type": {
+              "displayName": [
+                "AccountId"
+              ],
+              "type": 0
+            }
+          }
+        ],
+        "default": false,
+        "docs": [],
+        "label": "owner_of",
+        "mutates": false,
+        "payable": false,
+        "returnType": {
+          "displayName": [
+            "ink",
+            "MessageResult"
+          ],
+          "type": 19
+        },
+        "selector": "0x99720c1e"
+      },
+      {
+        "args": [
+          {
+            "label": "account",
+            "type": {
+              "displayName": [
+                "AccountId"
+              ],
+              "type": 0
+            }
+          }
+        ],
+        "default": false,
+        "docs": [],
+        "label": "is_holder",
+        "mutates": false,
+        "payable": false,
+        "returnType": {
+          "displayName": [
+            "ink",
+            "MessageResult"
+          ],
+          "type": 22
+        },
+        "selector": "0x4b4dd138"
+      }
+    ]
+  },
+  "storage": {
+    "root": {
+      "layout": {
+        "struct": {
+          "fields": [
+            {
+              "layout": {
+                "leaf": {
+                  "key": "0x00000000",
+                  "ty": 0
+                }
+              },
+              "name": "owner"
+            },
+            {
+              "layout": {
+                "root": {
+                  "layout": {
+                    "leaf": {
+                      "key": "0x04641ad0",
+                      "ty": 3
+                    }
+                  },
+                  "root_key": "0x04641ad0",
+                  "ty": 4
+                }
+              },
+              "name": "metadata"
+            },
+            {
+              "layout": {
+                "root": {
+                  "layout": {
+                    "leaf": {
+                      "key": "0xb8ccac73",
+                      "ty": 9
+                    }
+                  },
+                  "root_key": "0xb8ccac73",
+                  "ty": 10
+                }
+              },
+              "name": "issued"
+            }
+          ],
+          "name": "HealthSbt"
+        }
+      },
+      "root_key": "0x00000000",
+      "ty": 13
+    }
+  },
+  "types": [
+    {
+      "id": 0,
+      "type": {
+        "def": {
+          "composite": {
+            "fields": [
+              {
+                "type": 1,
+                "typeName": "[u8; 32]"
+              }
+            ]
+          }
+        },
+        "path": [
+          "ink_primitives",
+          "types",
+          "AccountId"
+        ]
+      }
+    },
+    {
+      "id": 1,
+      "type": {
+        "def": {
+          "array": {
+            "len": 32,
+            "type": 2
+          }
+        }
+      }
+    },
+    {
+      "id": 2,
+      "type": {
+        "def": {
+          "primitive": "u8"
+        }
+      }
+    },
+    {
+      "id": 3,
+      "type": {
+        "def": {
+          "primitive": "str"
+        }
+      }
+    },
+    {
+      "id": 4,
+      "type": {
+        "def": {
+          "composite": {}
+        },
+        "params": [
+          {
+            "name": "K",
+            "type": 0
+          },
+          {
+            "name": "V",
+            "type": 3
+          },
+          {
+            "name": "KeyType",
+            "type": 5
+          }
+        ],
+        "path": [
+          "ink_storage",
+          "lazy",
+          "mapping",
+          "Mapping"
+        ]
+      }
+    },
+    {
+      "id": 5,
+      "type": {
+        "def": {
+          "composite": {}
+        },
+        "params": [
+          {
+            "name": "L",
+            "type": 6
+          },
+          {
+            "name": "R",
+            "type": 7
+          }
+        ],
+        "path": [
+          "ink_storage_traits",
+          "impls",
+          "ResolverKey"
+        ]
+      }
+    },
+    {
+      "id": 6,
+      "type": {
+        "def": {
+          "composite": {}
+        },
+        "path": [
+          "ink_storage_traits",
+          "impls",
+          "AutoKey"
+        ]
+      }
+    },
+    {
+      "id": 7,
+      "type": {
+        "def": {
+          "composite": {}
+        },
+        "params": [
+          {
+            "name": "ParentKey",
+            "type": 8
+          }
+        ],
+        "path": [
+          "ink_storage_traits",
+          "impls",
+          "ManualKey"
+        ]
+      }
+    },
+    {
+      "id": 8,
+      "type": {
+        "def": {
+          "tuple": []
+        }
+      }
+    },
+    {
+      "id": 9,
+      "type": {
+        "def": {
+          "primitive": "u64"
+        }
+      }
+    },
+    {
+      "id": 10,
+      "type": {
+        "def": {
+          "composite": {}
+        },
+        "params": [
+          {
+            "name": "K",
+            "type": 0
+          },
+          {
+            "name": "V",
+            "type": 9
+          },
+          {
+            "name": "KeyType",
+            "type": 11
+          }
+        ],
+        "path": [
+          "ink_storage",
+          "lazy",
+          "mapping",
+          "Mapping"
+        ]
+      }
+    },
+    {
+      "id": 11,
+      "type": {
+        "def": {
+          "composite": {}
+        },
+        "params": [
+          {
+            "name": "L",
+            "type": 6
+          },
+          {
+            "name": "R",
+            "type": 12
+          }
+        ],
+        "path": [
+          "ink_storage_traits",
+          "impls",
+          "ResolverKey"
+        ]
+      }
+    },
+    {
+      "id": 12,
+      "type": {
+        "def": {
+          "composite": {}
+        },
+        "params": [
+          {
+            "name": "ParentKey",
+            "type": 8
+          }
+        ],
+        "path": [
+          "ink_storage_traits",
+          "impls",
+          "ManualKey"
+        ]
+      }
+    },
+    {
+      "id": 13,
+      "type": {
+        "def": {
+          "composite": {
+            "fields": [
+              {
+                "name": "owner",
+                "type": 0,
+                "typeName": "<AccountId as::ink::storage::traits::AutoStorableHint<::ink::\nstorage::traits::ManualKey<97027710u32, ()>,>>::Type"
+              },
+              {
+                "name": "metadata",
+                "type": 4,
+                "typeName": "<Mapping<AccountId, String> as::ink::storage::traits::\nAutoStorableHint<::ink::storage::traits::ManualKey<3491390468u32,\n()>,>>::Type"
+              },
+              {
+                "name": "issued",
+                "type": 10,
+                "typeName": "<Mapping<AccountId, u64> as::ink::storage::traits::\nAutoStorableHint<::ink::storage::traits::ManualKey<1940704440u32,\n()>,>>::Type"
+              }
+            ]
+          }
+        },
+        "path": [
+          "health_sbt",
+          "health_sbt",
+          "HealthSbt"
+        ]
+      }
+    },
+    {
+      "id": 14,
+      "type": {
+        "def": {
+          "variant": {
+            "variants": [
+              {
+                "fields": [
+                  {
+                    "type": 8
+                  }
+                ],
+                "index": 0,
+                "name": "Ok"
+              },
+              {
+                "fields": [
+                  {
+                    "type": 15
+                  }
+                ],
+                "index": 1,
+                "name": "Err"
+              }
+            ]
+          }
+        },
+        "params": [
+          {
+            "name": "T",
+            "type": 8
+          },
+          {
+            "name": "E",
+            "type": 15
+          }
+        ],
+        "path": [
+          "Result"
+        ]
+      }
+    },
+    {
+      "id": 15,
+      "type": {
+        "def": {
+          "variant": {
+            "variants": [
+              {
+                "index": 1,
+                "name": "CouldNotReadInput"
+              }
+            ]
+          }
+        },
+        "path": [
+          "ink_primitives",
+          "LangError"
+        ]
+      }
+    },
+    {
+      "id": 16,
+      "type": {
+        "def": {
+          "variant": {
+            "variants": [
+              {
+                "fields": [
+                  {
+                    "type": 17
+                  }
+                ],
+                "index": 0,
+                "name": "Ok"
+              },
+              {
+                "fields": [
+                  {
+                    "type": 15
+                  }
+                ],
+                "index": 1,
+                "name": "Err"
+              }
+            ]
+          }
+        },
+        "params": [
+          {
+            "name": "T",
+            "type": 17
+          },
+          {
+            "name": "E",
+            "type": 15
+          }
+        ],
+        "path": [
+          "Result"
+        ]
+      }
+    },
+    {
+      "id": 17,
+      "type": {
+        "def": {
+          "variant": {
+            "variants": [
+              {
+                "fields": [
+                  {
+                    "type": 8
+                  }
+                ],
+                "index": 0,
+                "name": "Ok"
+              },
+              {
+                "fields": [
+                  {
+                    "type": 18
+                  }
+                ],
+                "index": 1,
+                "name": "Err"
+              }
+            ]
+          }
+        },
+        "params": [
+          {
+            "name": "T",
+            "type": 8
+          },
+          {
+            "name": "E",
+            "type": 18
+          }
+        ],
+        "path": [
+          "Result"
+        ]
+      }
+    },
+    {
+      "id": 18,
+      "type": {
+        "def": {
+          "variant": {
+            "variants": [
+              {
+                "index": 0,
+                "name": "Unauthorised"
+              },
+              {
+                "index": 1,
+                "name": "AlreadyExists"
+              }
+            ]
+          }
+        },
+        "path": [
+          "health_sbt",
+          "health_sbt",
+          "Error"
+        ]
+      }
+    },
+    {
+      "id": 19,
+      "type": {
+        "def": {
+          "variant": {
+            "variants": [
+              {
+                "fields": [
+                  {
+                    "type": 20
+                  }
+                ],
+                "index": 0,
+                "name": "Ok"
+              },
+              {
+                "fields": [
+                  {
+                    "type": 15
+                  }
+                ],
+                "index": 1,
+                "name": "Err"
+              }
+            ]
+          }
+        },
+        "params": [
+          {
+            "name": "T",
+            "type": 20
+          },
+          {
+            "name": "E",
+            "type": 15
+          }
+        ],
+        "path": [
+          "Result"
+        ]
+      }
+    },
+    {
+      "id": 20,
+      "type": {
+        "def": {
+          "variant": {
+            "variants": [
+              {
+                "index": 0,
+                "name": "None"
+              },
+              {
+                "fields": [
+                  {
+                    "type": 21
+                  }
+                ],
+                "index": 1,
+                "name": "Some"
+              }
+            ]
+          }
+        },
+        "params": [
+          {
+            "name": "T",
+            "type": 21
+          }
+        ],
+        "path": [
+          "Option"
+        ]
+      }
+    },
+    {
+      "id": 21,
+      "type": {
+        "def": {
+          "composite": {
+            "fields": [
+              {
+                "name": "metadata",
+                "type": 3,
+                "typeName": "String"
+              },
+              {
+                "name": "issued",
+                "type": 9,
+                "typeName": "u64"
+              }
+            ]
+          }
+        },
+        "path": [
+          "health_sbt",
+          "health_sbt",
+          "Token"
+        ]
+      }
+    },
+    {
+      "id": 22,
+      "type": {
+        "def": {
+          "variant": {
+            "variants": [
+              {
+                "fields": [
+                  {
+                    "type": 23
+                  }
+                ],
+                "index": 0,
+                "name": "Ok"
+              },
+              {
+                "fields": [
+                  {
+                    "type": 15
+                  }
+                ],
+                "index": 1,
+                "name": "Err"
+              }
+            ]
+          }
+        },
+        "params": [
+          {
+            "name": "T",
+            "type": 23
+          },
+          {
+            "name": "E",
+            "type": 15
+          }
+        ],
+        "path": [
+          "Result"
+        ]
+      }
+    },
+    {
+      "id": 23,
+      "type": {
+        "def": {
+          "primitive": "bool"
+        }
+      }
+    },
+    {
+      "id": 24,
+      "type": {
+        "def": {
+          "primitive": "u128"
+        }
+      }
+    },
+    {
+      "id": 25,
+      "type": {
+        "def": {
+          "composite": {
+            "fields": [
+              {
+                "type": 1,
+                "typeName": "[u8; 32]"
+              }
+            ]
+          }
+        },
+        "path": [
+          "ink_primitives",
+          "types",
+          "Hash"
+        ]
+      }
+    },
+    {
+      "id": 26,
+      "type": {
+        "def": {
+          "primitive": "u32"
+        }
+      }
+    },
+    {
+      "id": 27,
+      "type": {
+        "def": {
+          "variant": {}
+        },
+        "path": [
+          "ink_env",
+          "types",
+          "NoChainExtension"
+        ]
+      }
+    }
+  ],
+  "version": 5
+}

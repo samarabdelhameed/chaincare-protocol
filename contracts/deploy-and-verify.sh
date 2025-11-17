@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 
 # Complete deployment and verification script for ChainCARE contracts
 # This script will deploy all contracts and provide verification instructions
@@ -37,9 +37,65 @@ echo -e "${BLUE}🌐 RPC: $RPC_URL${NC}"
 echo -e "${BLUE}👤 Address: $ADDRESS${NC}"
 echo ""
 
-# Array to store addresses and extrinsic hashes
-declare -A ADDRESSES
-declare -A EXTRINSICS
+# Function to get Subscan URL based on network
+get_subscan_url() {
+  local rpc_url="$RPC_URL"
+  local network="$NETWORK"
+  
+  # Detect network from RPC URL if NETWORK not set
+  if [ -z "$network" ]; then
+    if echo "$rpc_url" | grep -qi "paseo"; then
+      network="paseo"
+    elif echo "$rpc_url" | grep -qi "shibuya"; then
+      network="shibuya"
+    elif echo "$rpc_url" | grep -qi "polkadot"; then
+      network="polkadot"
+    elif echo "$rpc_url" | grep -qi "westend"; then
+      network="westend"
+    else
+      network="polkadot"  # default
+    fi
+  fi
+  
+  # Return appropriate Subscan URL
+  case "$network" in
+    paseo)
+      echo "https://paseo.subscan.io"
+      ;;
+    shibuya)
+      echo "https://shibuya.subscan.io"
+      ;;
+    polkadot|polkadot-testnet)
+      echo "https://polkadot.subscan.io"
+      ;;
+    westend)
+      echo "https://westend.subscan.io"
+      ;;
+    *)
+      echo "https://polkadot.subscan.io"  # default
+      ;;
+  esac
+}
+
+SUBSCAN_BASE=$(get_subscan_url)
+echo -e "${BLUE}🔍 Subscan Explorer: $SUBSCAN_BASE${NC}"
+echo ""
+
+# Variables to store addresses and extrinsic hashes
+HEALTH_SBT_ADDR=""
+HEALTH_SBT_HASH=""
+TREASURY_ADDR=""
+TREASURY_HASH=""
+CARE_SPACE_ADDR=""
+CARE_SPACE_HASH=""
+MED_REMINDER_ADDR=""
+MED_REMINDER_HASH=""
+STEP_COUNTER_ADDR=""
+STEP_COUNTER_HASH=""
+ZK_CAMERA_ADDR=""
+ZK_CAMERA_HASH=""
+GOVERNANCE_ADDR=""
+GOVERNANCE_HASH=""
 
 # Function to deploy a contract
 deploy_contract() {
@@ -72,8 +128,8 @@ deploy_contract() {
   OUTPUT=$(eval $CMD 2>&1)
   
   # Extract contract address and extrinsic hash
-  CONTRACT_ADDR=$(echo "$OUTPUT" | grep -oP 'Contract\s+\K[^\s]+' | head -1 || echo "")
-  EXTRINSIC_HASH=$(echo "$OUTPUT" | grep -oP 'Extrinsic hash:\s+\K[^\s]+' | head -1 || echo "")
+  CONTRACT_ADDR=$(echo "$OUTPUT" | grep -oE 'Contract [^ ]+' | head -1 | awk '{print $2}' || echo "")
+  EXTRINSIC_HASH=$(echo "$OUTPUT" | grep -oE 'Extrinsic hash: [^ ]+' | head -1 | awk '{print $3}' || echo "")
   
   if [ -z "$CONTRACT_ADDR" ]; then
     echo -e "${RED}❌ Failed to deploy $CONTRACT_NAME${NC}"
@@ -82,45 +138,66 @@ deploy_contract() {
     exit 1
   fi
   
-  ADDRESSES[$CONTRACT_NAME]="$CONTRACT_ADDR"
-  EXTRINSICS[$CONTRACT_NAME]="$EXTRINSIC_HASH"
-  
   echo -e "${GREEN}✅ Deployed successfully!${NC}"
   echo -e "${GREEN}   📍 Contract: $CONTRACT_ADDR${NC}"
   echo -e "${GREEN}   🔗 Extrinsic: $EXTRINSIC_HASH${NC}"
   echo ""
   echo -e "${BLUE}🔍 Verify on Subscan:${NC}"
-  echo -e "${BLUE}   https://polkadot.subscan.io/extrinsic/$EXTRINSIC_HASH${NC}"
+  echo -e "${BLUE}   $SUBSCAN_BASE/extrinsic/$EXTRINSIC_HASH${NC}"
   echo ""
   
   cd - > /dev/null
+  
+  # Return values via echo
+  echo "$CONTRACT_ADDR|$EXTRINSIC_HASH"
 }
 
 # 1. Deploy health_sbt
-deploy_contract "health_sbt" "health_sbt" "new" "$HEALTH_SBT_ADMIN"
+echo -e "${BLUE}🏥 Deploying health_sbt...${NC}"
+RESULT=$(deploy_contract "health_sbt" "health_sbt" "new" "$HEALTH_SBT_ADMIN")
+HEALTH_SBT_ADDR=$(echo "$RESULT" | tail -1 | cut -d'|' -f1)
+HEALTH_SBT_HASH=$(echo "$RESULT" | tail -1 | cut -d'|' -f2)
 
 # 2. Deploy care_treasury
-deploy_contract "care_treasury" "care_treasury" "new" "$TREASURY_ADMIN" "$TREASURY_DAILY_RATE"
+echo -e "${BLUE}💰 Deploying care_treasury...${NC}"
+RESULT=$(deploy_contract "care_treasury" "care_treasury" "new" "$TREASURY_ADMIN" "$TREASURY_DAILY_RATE")
+TREASURY_ADDR=$(echo "$RESULT" | tail -1 | cut -d'|' -f1)
+TREASURY_HASH=$(echo "$RESULT" | tail -1 | cut -d'|' -f2)
 
 # 3. Deploy care_space (needs health_sbt and treasury addresses)
-deploy_contract "care_space" "care_space" "new" \
+echo -e "${BLUE}🏠 Deploying care_space...${NC}"
+RESULT=$(deploy_contract "care_space" "care_space" "new" \
   "$CARE_SPACE_OWNER" \
   "$CARE_SPACE_NAME" \
   "$CARE_SPACE_PATIENT" \
-  "${ADDRESSES[care_treasury]}" \
-  "${ADDRESSES[health_sbt]}"
+  "$TREASURY_ADDR" \
+  "$HEALTH_SBT_ADDR")
+CARE_SPACE_ADDR=$(echo "$RESULT" | tail -1 | cut -d'|' -f1)
+CARE_SPACE_HASH=$(echo "$RESULT" | tail -1 | cut -d'|' -f2)
 
 # 4. Deploy med_reminder
-deploy_contract "med_reminder" "plugins/med_reminder" "new" "$MED_REMINDER_MED_ID"
+echo -e "${BLUE}💊 Deploying med_reminder...${NC}"
+RESULT=$(deploy_contract "med_reminder" "plugins/med_reminder" "new" "$MED_REMINDER_MED_ID")
+MED_REMINDER_ADDR=$(echo "$RESULT" | tail -1 | cut -d'|' -f1)
+MED_REMINDER_HASH=$(echo "$RESULT" | tail -1 | cut -d'|' -f2)
 
 # 5. Deploy step_counter
-deploy_contract "step_counter" "plugins/step_counter" "new" "$STEP_COUNTER_ADMIN" "$STEP_COUNTER_DAILY_TARGET"
+echo -e "${BLUE}👟 Deploying step_counter...${NC}"
+RESULT=$(deploy_contract "step_counter" "plugins/step_counter" "new" "$STEP_COUNTER_ADMIN" "$STEP_COUNTER_DAILY_TARGET")
+STEP_COUNTER_ADDR=$(echo "$RESULT" | tail -1 | cut -d'|' -f1)
+STEP_COUNTER_HASH=$(echo "$RESULT" | tail -1 | cut -d'|' -f2)
 
 # 6. Deploy zk_camera
-deploy_contract "zk_camera" "plugins/zk_camera" "new" "$ZK_CAMERA_ADMIN"
+echo -e "${BLUE}📷 Deploying zk_camera...${NC}"
+RESULT=$(deploy_contract "zk_camera" "plugins/zk_camera" "new" "$ZK_CAMERA_ADMIN")
+ZK_CAMERA_ADDR=$(echo "$RESULT" | tail -1 | cut -d'|' -f1)
+ZK_CAMERA_HASH=$(echo "$RESULT" | tail -1 | cut -d'|' -f2)
 
 # 7. Deploy governance
-deploy_contract "governance" "plugins/governance" "new" "$GOVERNANCE_ADMIN"
+echo -e "${BLUE}🏛️ Deploying governance...${NC}"
+RESULT=$(deploy_contract "governance" "plugins/governance" "new" "$GOVERNANCE_ADMIN")
+GOVERNANCE_ADDR=$(echo "$RESULT" | tail -1 | cut -d'|' -f1)
+GOVERNANCE_HASH=$(echo "$RESULT" | tail -1 | cut -d'|' -f2)
 
 # Save addresses to JSON file
 echo -e "${YELLOW}━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━${NC}"
@@ -130,13 +207,13 @@ echo -e "${YELLOW}━━━━━━━━━━━━━━━━━━━━�
 ADDRESSES_FILE="../frontend/src/addresses.polkadot-testnet.json"
 cat > "$ADDRESSES_FILE" << EOF
 {
-  "careSpace": "${ADDRESSES[care_space]}",
-  "healthSbt": "${ADDRESSES[health_sbt]}",
-  "treasury": "${ADDRESSES[care_treasury]}",
-  "medReminder": "${ADDRESSES[med_reminder]}",
-  "stepCounter": "${ADDRESSES[step_counter]}",
-  "zkCamera": "${ADDRESSES[zk_camera]}",
-  "governance": "${ADDRESSES[governance]}"
+  "careSpace": "$CARE_SPACE_ADDR",
+  "healthSbt": "$HEALTH_SBT_ADDR",
+  "treasury": "$TREASURY_ADDR",
+  "medReminder": "$MED_REMINDER_ADDR",
+  "stepCounter": "$STEP_COUNTER_ADDR",
+  "zkCamera": "$ZK_CAMERA_ADDR",
+  "governance": "$GOVERNANCE_ADDR"
 }
 EOF
 
@@ -149,13 +226,13 @@ echo -e "${GREEN}║              ✅ DEPLOYMENT COMPLETED SUCCESSFULLY         
 echo -e "${GREEN}╚════════════════════════════════════════════════════════════╝${NC}"
 echo ""
 echo -e "${BLUE}📋 Contract Addresses:${NC}"
-echo -e "   health_sbt:    ${ADDRESSES[health_sbt]}"
-echo -e "   care_treasury: ${ADDRESSES[care_treasury]}"
-echo -e "   care_space:    ${ADDRESSES[care_space]}"
-echo -e "   med_reminder:  ${ADDRESSES[med_reminder]}"
-echo -e "   step_counter:  ${ADDRESSES[step_counter]}"
-echo -e "   zk_camera:     ${ADDRESSES[zk_camera]}"
-echo -e "   governance:    ${ADDRESSES[governance]}"
+echo -e "   health_sbt:    $HEALTH_SBT_ADDR"
+echo -e "   care_treasury: $TREASURY_ADDR"
+echo -e "   care_space:    $CARE_SPACE_ADDR"
+echo -e "   med_reminder:  $MED_REMINDER_ADDR"
+echo -e "   step_counter:  $STEP_COUNTER_ADDR"
+echo -e "   zk_camera:     $ZK_CAMERA_ADDR"
+echo -e "   governance:    $GOVERNANCE_ADDR"
 echo ""
 
 # Create verification instructions file
@@ -167,18 +244,18 @@ cat > "$VERIFY_FILE" << EOF
 
 | Contract | Address | Extrinsic Hash |
 |----------|---------|----------------|
-| health_sbt | ${ADDRESSES[health_sbt]} | ${EXTRINSICS[health_sbt]} |
-| care_treasury | ${ADDRESSES[care_treasury]} | ${EXTRINSICS[care_treasury]} |
-| care_space | ${ADDRESSES[care_space]} | ${EXTRINSICS[care_space]} |
-| med_reminder | ${ADDRESSES[med_reminder]} | ${EXTRINSICS[med_reminder]} |
-| step_counter | ${ADDRESSES[step_counter]} | ${EXTRINSICS[step_counter]} |
-| zk_camera | ${ADDRESSES[zk_camera]} | ${EXTRINSICS[zk_camera]} |
-| governance | ${ADDRESSES[governance]} | ${EXTRINSICS[governance]} |
+| health_sbt | $HEALTH_SBT_ADDR | $HEALTH_SBT_HASH |
+| care_treasury | $TREASURY_ADDR | $TREASURY_HASH |
+| care_space | $CARE_SPACE_ADDR | $CARE_SPACE_HASH |
+| med_reminder | $MED_REMINDER_ADDR | $MED_REMINDER_HASH |
+| step_counter | $STEP_COUNTER_ADDR | $STEP_COUNTER_HASH |
+| zk_camera | $ZK_CAMERA_ADDR | $ZK_CAMERA_HASH |
+| governance | $GOVERNANCE_ADDR | $GOVERNANCE_HASH |
 
 ## Verification Steps for Each Contract
 
 ### 1. health_sbt
-- **Subscan Link**: https://polkadot.subscan.io/extrinsic/${EXTRINSICS[health_sbt]}
+- **Subscan Link**: $SUBSCAN_BASE/extrinsic/$HEALTH_SBT_HASH
 - **Contract File**: \`target/ink/health_sbt/health_sbt.contract\`
 - **Steps**:
   1. Open the Subscan link above
@@ -190,27 +267,27 @@ cat > "$VERIFY_FILE" << EOF
   7. Click Verify
 
 ### 2. care_treasury
-- **Subscan Link**: https://polkadot.subscan.io/extrinsic/${EXTRINSICS[care_treasury]}
+- **Subscan Link**: $SUBSCAN_BASE/extrinsic/$TREASURY_HASH
 - **Contract File**: \`target/ink/care_treasury/care_treasury.contract\`
 
 ### 3. care_space
-- **Subscan Link**: https://polkadot.subscan.io/extrinsic/${EXTRINSICS[care_space]}
+- **Subscan Link**: $SUBSCAN_BASE/extrinsic/$CARE_SPACE_HASH
 - **Contract File**: \`target/ink/care_space/care_space.contract\`
 
 ### 4. med_reminder
-- **Subscan Link**: https://polkadot.subscan.io/extrinsic/${EXTRINSICS[med_reminder]}
+- **Subscan Link**: $SUBSCAN_BASE/extrinsic/$MED_REMINDER_HASH
 - **Contract File**: \`target/ink/med_reminder/med_reminder.contract\`
 
 ### 5. step_counter
-- **Subscan Link**: https://polkadot.subscan.io/extrinsic/${EXTRINSICS[step_counter]}
+- **Subscan Link**: $SUBSCAN_BASE/extrinsic/$STEP_COUNTER_HASH
 - **Contract File**: \`target/ink/step_counter/step_counter.contract\`
 
 ### 6. zk_camera
-- **Subscan Link**: https://polkadot.subscan.io/extrinsic/${EXTRINSICS[zk_camera]}
+- **Subscan Link**: $SUBSCAN_BASE/extrinsic/$ZK_CAMERA_HASH
 - **Contract File**: \`target/ink/zk_camera/zk_camera.contract\`
 
 ### 7. governance
-- **Subscan Link**: https://polkadot.subscan.io/extrinsic/${EXTRINSICS[governance]}
+- **Subscan Link**: $SUBSCAN_BASE/extrinsic/$GOVERNANCE_HASH
 - **Contract File**: \`target/ink/governance/governance.contract\`
 
 ## Quick Verification Commands
@@ -219,7 +296,7 @@ For each contract, you can use the following command to get the verification lin
 
 \`\`\`bash
 # Example for health_sbt
-echo "https://polkadot.subscan.io/extrinsic/${EXTRINSICS[health_sbt]}"
+echo "$SUBSCAN_BASE/extrinsic/$HEALTH_SBT_HASH"
 \`\`\`
 
 ## Next Steps

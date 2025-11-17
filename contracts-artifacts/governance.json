@@ -1,0 +1,1366 @@
+{
+  "source": {
+    "hash": "0xbd8785087e0d92abfdd96d72bde760fe07bf44095c74a86f6d5c7a215f4f83b9",
+    "language": "ink! 5.1.1",
+    "compiler": "rustc 1.91.1",
+    "build_info": {
+      "build_mode": "Release",
+      "cargo_contract_version": "4.1.3",
+      "rust_toolchain": "stable-aarch64-apple-darwin",
+      "wasm_opt_settings": {
+        "keep_debug_symbols": false,
+        "optimization_passes": "Z"
+      }
+    }
+  },
+  "contract": {
+    "name": "governance",
+    "version": "0.1.0",
+    "authors": [
+      "[your_name] <[your_email]>"
+    ]
+  },
+  "image": null,
+  "spec": {
+    "constructors": [
+      {
+        "args": [
+          {
+            "label": "admin",
+            "type": {
+              "displayName": [
+                "AccountId"
+              ],
+              "type": 0
+            }
+          }
+        ],
+        "default": false,
+        "docs": [],
+        "label": "new",
+        "payable": false,
+        "returnType": {
+          "displayName": [
+            "ink_primitives",
+            "ConstructorResult"
+          ],
+          "type": 25
+        },
+        "selector": "0x9bae9d5e"
+      }
+    ],
+    "docs": [],
+    "environment": {
+      "accountId": {
+        "displayName": [
+          "AccountId"
+        ],
+        "type": 0
+      },
+      "balance": {
+        "displayName": [
+          "Balance"
+        ],
+        "type": 36
+      },
+      "blockNumber": {
+        "displayName": [
+          "BlockNumber"
+        ],
+        "type": 38
+      },
+      "chainExtension": {
+        "displayName": [
+          "ChainExtension"
+        ],
+        "type": 39
+      },
+      "hash": {
+        "displayName": [
+          "Hash"
+        ],
+        "type": 37
+      },
+      "maxEventTopics": 4,
+      "staticBufferSize": 16384,
+      "timestamp": {
+        "displayName": [
+          "Timestamp"
+        ],
+        "type": 5
+      }
+    },
+    "events": [
+      {
+        "args": [
+          {
+            "docs": [],
+            "indexed": false,
+            "label": "id",
+            "type": {
+              "displayName": [
+                "u64"
+              ],
+              "type": 5
+            }
+          },
+          {
+            "docs": [],
+            "indexed": false,
+            "label": "voter",
+            "type": {
+              "displayName": [
+                "AccountId"
+              ],
+              "type": 0
+            }
+          },
+          {
+            "docs": [],
+            "indexed": false,
+            "label": "vote",
+            "type": {
+              "displayName": [
+                "bool"
+              ],
+              "type": 16
+            }
+          }
+        ],
+        "docs": [],
+        "label": "Voted",
+        "module_path": "governance::governance",
+        "signature_topic": "0x4dcda527bd1b4664a68bd9b102bc20398779c7f70975998a487ca383103dc26c"
+      },
+      {
+        "args": [
+          {
+            "docs": [],
+            "indexed": false,
+            "label": "id",
+            "type": {
+              "displayName": [
+                "u64"
+              ],
+              "type": 5
+            }
+          },
+          {
+            "docs": [],
+            "indexed": false,
+            "label": "description",
+            "type": {
+              "displayName": [
+                "String"
+              ],
+              "type": 3
+            }
+          }
+        ],
+        "docs": [],
+        "label": "ProposalCreated",
+        "module_path": "governance::governance",
+        "signature_topic": "0xfeb118b81ec5d2dd8b5b381fde8fb0e2253f6c0a8e8c582a0d16e84bdf89fe7e"
+      }
+    ],
+    "lang_error": {
+      "displayName": [
+        "ink",
+        "LangError"
+      ],
+      "type": 26
+    },
+    "messages": [
+      {
+        "args": [
+          {
+            "label": "description",
+            "type": {
+              "displayName": [
+                "String"
+              ],
+              "type": 3
+            }
+          }
+        ],
+        "default": false,
+        "docs": [],
+        "label": "create_proposal",
+        "mutates": true,
+        "payable": false,
+        "returnType": {
+          "displayName": [
+            "ink",
+            "MessageResult"
+          ],
+          "type": 27
+        },
+        "selector": "0xf9fb13d3"
+      },
+      {
+        "args": [
+          {
+            "label": "id",
+            "type": {
+              "displayName": [
+                "u64"
+              ],
+              "type": 5
+            }
+          },
+          {
+            "label": "vote",
+            "type": {
+              "displayName": [
+                "bool"
+              ],
+              "type": 16
+            }
+          }
+        ],
+        "default": false,
+        "docs": [],
+        "label": "vote",
+        "mutates": true,
+        "payable": false,
+        "returnType": {
+          "displayName": [
+            "ink",
+            "MessageResult"
+          ],
+          "type": 30
+        },
+        "selector": "0x083be260"
+      },
+      {
+        "args": [
+          {
+            "label": "id",
+            "type": {
+              "displayName": [
+                "u64"
+              ],
+              "type": 5
+            }
+          }
+        ],
+        "default": false,
+        "docs": [],
+        "label": "get_proposal",
+        "mutates": false,
+        "payable": false,
+        "returnType": {
+          "displayName": [
+            "ink",
+            "MessageResult"
+          ],
+          "type": 32
+        },
+        "selector": "0xba4dc5ec"
+      },
+      {
+        "args": [
+          {
+            "label": "id",
+            "type": {
+              "displayName": [
+                "u64"
+              ],
+              "type": 5
+            }
+          },
+          {
+            "label": "voter",
+            "type": {
+              "displayName": [
+                "AccountId"
+              ],
+              "type": 0
+            }
+          }
+        ],
+        "default": false,
+        "docs": [],
+        "label": "has_voted",
+        "mutates": false,
+        "payable": false,
+        "returnType": {
+          "displayName": [
+            "ink",
+            "MessageResult"
+          ],
+          "type": 35
+        },
+        "selector": "0xb03e31b0"
+      }
+    ]
+  },
+  "storage": {
+    "root": {
+      "layout": {
+        "struct": {
+          "fields": [
+            {
+              "layout": {
+                "leaf": {
+                  "key": "0x00000000",
+                  "ty": 0
+                }
+              },
+              "name": "admin"
+            },
+            {
+              "layout": {
+                "root": {
+                  "layout": {
+                    "leaf": {
+                      "key": "0x57ed6717",
+                      "ty": 3
+                    }
+                  },
+                  "root_key": "0x57ed6717",
+                  "ty": 4
+                }
+              },
+              "name": "descriptions"
+            },
+            {
+              "layout": {
+                "root": {
+                  "layout": {
+                    "leaf": {
+                      "key": "0x84fc3597",
+                      "ty": 5
+                    }
+                  },
+                  "root_key": "0x84fc3597",
+                  "ty": 10
+                }
+              },
+              "name": "votes_for"
+            },
+            {
+              "layout": {
+                "root": {
+                  "layout": {
+                    "leaf": {
+                      "key": "0x27cf0223",
+                      "ty": 5
+                    }
+                  },
+                  "root_key": "0x27cf0223",
+                  "ty": 13
+                }
+              },
+              "name": "votes_against"
+            },
+            {
+              "layout": {
+                "root": {
+                  "layout": {
+                    "leaf": {
+                      "key": "0x479c0c97",
+                      "ty": 16
+                    }
+                  },
+                  "root_key": "0x479c0c97",
+                  "ty": 17
+                }
+              },
+              "name": "active"
+            },
+            {
+              "layout": {
+                "leaf": {
+                  "key": "0x00000000",
+                  "ty": 5
+                }
+              },
+              "name": "next_id"
+            },
+            {
+              "layout": {
+                "root": {
+                  "layout": {
+                    "leaf": {
+                      "key": "0x0b5fb09b",
+                      "ty": 16
+                    }
+                  },
+                  "root_key": "0x0b5fb09b",
+                  "ty": 20
+                }
+              },
+              "name": "votes"
+            }
+          ],
+          "name": "Governance"
+        }
+      },
+      "root_key": "0x00000000",
+      "ty": 24
+    }
+  },
+  "types": [
+    {
+      "id": 0,
+      "type": {
+        "def": {
+          "composite": {
+            "fields": [
+              {
+                "type": 1,
+                "typeName": "[u8; 32]"
+              }
+            ]
+          }
+        },
+        "path": [
+          "ink_primitives",
+          "types",
+          "AccountId"
+        ]
+      }
+    },
+    {
+      "id": 1,
+      "type": {
+        "def": {
+          "array": {
+            "len": 32,
+            "type": 2
+          }
+        }
+      }
+    },
+    {
+      "id": 2,
+      "type": {
+        "def": {
+          "primitive": "u8"
+        }
+      }
+    },
+    {
+      "id": 3,
+      "type": {
+        "def": {
+          "primitive": "str"
+        }
+      }
+    },
+    {
+      "id": 4,
+      "type": {
+        "def": {
+          "composite": {}
+        },
+        "params": [
+          {
+            "name": "K",
+            "type": 5
+          },
+          {
+            "name": "V",
+            "type": 3
+          },
+          {
+            "name": "KeyType",
+            "type": 6
+          }
+        ],
+        "path": [
+          "ink_storage",
+          "lazy",
+          "mapping",
+          "Mapping"
+        ]
+      }
+    },
+    {
+      "id": 5,
+      "type": {
+        "def": {
+          "primitive": "u64"
+        }
+      }
+    },
+    {
+      "id": 6,
+      "type": {
+        "def": {
+          "composite": {}
+        },
+        "params": [
+          {
+            "name": "L",
+            "type": 7
+          },
+          {
+            "name": "R",
+            "type": 8
+          }
+        ],
+        "path": [
+          "ink_storage_traits",
+          "impls",
+          "ResolverKey"
+        ]
+      }
+    },
+    {
+      "id": 7,
+      "type": {
+        "def": {
+          "composite": {}
+        },
+        "path": [
+          "ink_storage_traits",
+          "impls",
+          "AutoKey"
+        ]
+      }
+    },
+    {
+      "id": 8,
+      "type": {
+        "def": {
+          "composite": {}
+        },
+        "params": [
+          {
+            "name": "ParentKey",
+            "type": 9
+          }
+        ],
+        "path": [
+          "ink_storage_traits",
+          "impls",
+          "ManualKey"
+        ]
+      }
+    },
+    {
+      "id": 9,
+      "type": {
+        "def": {
+          "tuple": []
+        }
+      }
+    },
+    {
+      "id": 10,
+      "type": {
+        "def": {
+          "composite": {}
+        },
+        "params": [
+          {
+            "name": "K",
+            "type": 5
+          },
+          {
+            "name": "V",
+            "type": 5
+          },
+          {
+            "name": "KeyType",
+            "type": 11
+          }
+        ],
+        "path": [
+          "ink_storage",
+          "lazy",
+          "mapping",
+          "Mapping"
+        ]
+      }
+    },
+    {
+      "id": 11,
+      "type": {
+        "def": {
+          "composite": {}
+        },
+        "params": [
+          {
+            "name": "L",
+            "type": 7
+          },
+          {
+            "name": "R",
+            "type": 12
+          }
+        ],
+        "path": [
+          "ink_storage_traits",
+          "impls",
+          "ResolverKey"
+        ]
+      }
+    },
+    {
+      "id": 12,
+      "type": {
+        "def": {
+          "composite": {}
+        },
+        "params": [
+          {
+            "name": "ParentKey",
+            "type": 9
+          }
+        ],
+        "path": [
+          "ink_storage_traits",
+          "impls",
+          "ManualKey"
+        ]
+      }
+    },
+    {
+      "id": 13,
+      "type": {
+        "def": {
+          "composite": {}
+        },
+        "params": [
+          {
+            "name": "K",
+            "type": 5
+          },
+          {
+            "name": "V",
+            "type": 5
+          },
+          {
+            "name": "KeyType",
+            "type": 14
+          }
+        ],
+        "path": [
+          "ink_storage",
+          "lazy",
+          "mapping",
+          "Mapping"
+        ]
+      }
+    },
+    {
+      "id": 14,
+      "type": {
+        "def": {
+          "composite": {}
+        },
+        "params": [
+          {
+            "name": "L",
+            "type": 7
+          },
+          {
+            "name": "R",
+            "type": 15
+          }
+        ],
+        "path": [
+          "ink_storage_traits",
+          "impls",
+          "ResolverKey"
+        ]
+      }
+    },
+    {
+      "id": 15,
+      "type": {
+        "def": {
+          "composite": {}
+        },
+        "params": [
+          {
+            "name": "ParentKey",
+            "type": 9
+          }
+        ],
+        "path": [
+          "ink_storage_traits",
+          "impls",
+          "ManualKey"
+        ]
+      }
+    },
+    {
+      "id": 16,
+      "type": {
+        "def": {
+          "primitive": "bool"
+        }
+      }
+    },
+    {
+      "id": 17,
+      "type": {
+        "def": {
+          "composite": {}
+        },
+        "params": [
+          {
+            "name": "K",
+            "type": 5
+          },
+          {
+            "name": "V",
+            "type": 16
+          },
+          {
+            "name": "KeyType",
+            "type": 18
+          }
+        ],
+        "path": [
+          "ink_storage",
+          "lazy",
+          "mapping",
+          "Mapping"
+        ]
+      }
+    },
+    {
+      "id": 18,
+      "type": {
+        "def": {
+          "composite": {}
+        },
+        "params": [
+          {
+            "name": "L",
+            "type": 7
+          },
+          {
+            "name": "R",
+            "type": 19
+          }
+        ],
+        "path": [
+          "ink_storage_traits",
+          "impls",
+          "ResolverKey"
+        ]
+      }
+    },
+    {
+      "id": 19,
+      "type": {
+        "def": {
+          "composite": {}
+        },
+        "params": [
+          {
+            "name": "ParentKey",
+            "type": 9
+          }
+        ],
+        "path": [
+          "ink_storage_traits",
+          "impls",
+          "ManualKey"
+        ]
+      }
+    },
+    {
+      "id": 20,
+      "type": {
+        "def": {
+          "composite": {}
+        },
+        "params": [
+          {
+            "name": "K",
+            "type": 21
+          },
+          {
+            "name": "V",
+            "type": 16
+          },
+          {
+            "name": "KeyType",
+            "type": 22
+          }
+        ],
+        "path": [
+          "ink_storage",
+          "lazy",
+          "mapping",
+          "Mapping"
+        ]
+      }
+    },
+    {
+      "id": 21,
+      "type": {
+        "def": {
+          "tuple": [
+            5,
+            0
+          ]
+        }
+      }
+    },
+    {
+      "id": 22,
+      "type": {
+        "def": {
+          "composite": {}
+        },
+        "params": [
+          {
+            "name": "L",
+            "type": 7
+          },
+          {
+            "name": "R",
+            "type": 23
+          }
+        ],
+        "path": [
+          "ink_storage_traits",
+          "impls",
+          "ResolverKey"
+        ]
+      }
+    },
+    {
+      "id": 23,
+      "type": {
+        "def": {
+          "composite": {}
+        },
+        "params": [
+          {
+            "name": "ParentKey",
+            "type": 9
+          }
+        ],
+        "path": [
+          "ink_storage_traits",
+          "impls",
+          "ManualKey"
+        ]
+      }
+    },
+    {
+      "id": 24,
+      "type": {
+        "def": {
+          "composite": {
+            "fields": [
+              {
+                "name": "admin",
+                "type": 0,
+                "typeName": "<AccountId as::ink::storage::traits::AutoStorableHint<::ink::\nstorage::traits::ManualKey<2018362660u32, ()>,>>::Type"
+              },
+              {
+                "name": "descriptions",
+                "type": 4,
+                "typeName": "<Mapping<u64, String> as::ink::storage::traits::AutoStorableHint<\n::ink::storage::traits::ManualKey<392686935u32, ()>,>>::Type"
+              },
+              {
+                "name": "votes_for",
+                "type": 10,
+                "typeName": "<Mapping<u64, u64> as::ink::storage::traits::AutoStorableHint<::\nink::storage::traits::ManualKey<2536897668u32, ()>,>>::Type"
+              },
+              {
+                "name": "votes_against",
+                "type": 13,
+                "typeName": "<Mapping<u64, u64> as::ink::storage::traits::AutoStorableHint<::\nink::storage::traits::ManualKey<587386663u32, ()>,>>::Type"
+              },
+              {
+                "name": "active",
+                "type": 17,
+                "typeName": "<Mapping<u64, bool> as::ink::storage::traits::AutoStorableHint<\n::ink::storage::traits::ManualKey<2534186055u32, ()>,>>::Type"
+              },
+              {
+                "name": "next_id",
+                "type": 5,
+                "typeName": "<u64 as::ink::storage::traits::AutoStorableHint<::ink::storage\n::traits::ManualKey<614111602u32, ()>,>>::Type"
+              },
+              {
+                "name": "votes",
+                "type": 20,
+                "typeName": "<Mapping<(u64, AccountId), bool> as::ink::storage::traits::\nAutoStorableHint<::ink::storage::traits::ManualKey<2612027147u32,\n()>,>>::Type"
+              }
+            ]
+          }
+        },
+        "path": [
+          "governance",
+          "governance",
+          "Governance"
+        ]
+      }
+    },
+    {
+      "id": 25,
+      "type": {
+        "def": {
+          "variant": {
+            "variants": [
+              {
+                "fields": [
+                  {
+                    "type": 9
+                  }
+                ],
+                "index": 0,
+                "name": "Ok"
+              },
+              {
+                "fields": [
+                  {
+                    "type": 26
+                  }
+                ],
+                "index": 1,
+                "name": "Err"
+              }
+            ]
+          }
+        },
+        "params": [
+          {
+            "name": "T",
+            "type": 9
+          },
+          {
+            "name": "E",
+            "type": 26
+          }
+        ],
+        "path": [
+          "Result"
+        ]
+      }
+    },
+    {
+      "id": 26,
+      "type": {
+        "def": {
+          "variant": {
+            "variants": [
+              {
+                "index": 1,
+                "name": "CouldNotReadInput"
+              }
+            ]
+          }
+        },
+        "path": [
+          "ink_primitives",
+          "LangError"
+        ]
+      }
+    },
+    {
+      "id": 27,
+      "type": {
+        "def": {
+          "variant": {
+            "variants": [
+              {
+                "fields": [
+                  {
+                    "type": 28
+                  }
+                ],
+                "index": 0,
+                "name": "Ok"
+              },
+              {
+                "fields": [
+                  {
+                    "type": 26
+                  }
+                ],
+                "index": 1,
+                "name": "Err"
+              }
+            ]
+          }
+        },
+        "params": [
+          {
+            "name": "T",
+            "type": 28
+          },
+          {
+            "name": "E",
+            "type": 26
+          }
+        ],
+        "path": [
+          "Result"
+        ]
+      }
+    },
+    {
+      "id": 28,
+      "type": {
+        "def": {
+          "variant": {
+            "variants": [
+              {
+                "fields": [
+                  {
+                    "type": 5
+                  }
+                ],
+                "index": 0,
+                "name": "Ok"
+              },
+              {
+                "fields": [
+                  {
+                    "type": 29
+                  }
+                ],
+                "index": 1,
+                "name": "Err"
+              }
+            ]
+          }
+        },
+        "params": [
+          {
+            "name": "T",
+            "type": 5
+          },
+          {
+            "name": "E",
+            "type": 29
+          }
+        ],
+        "path": [
+          "Result"
+        ]
+      }
+    },
+    {
+      "id": 29,
+      "type": {
+        "def": {
+          "variant": {
+            "variants": [
+              {
+                "index": 0,
+                "name": "Unauthorised"
+              },
+              {
+                "index": 1,
+                "name": "AlreadyVoted"
+              },
+              {
+                "index": 2,
+                "name": "NotFound"
+              },
+              {
+                "index": 3,
+                "name": "Inactive"
+              }
+            ]
+          }
+        },
+        "path": [
+          "governance",
+          "governance",
+          "Error"
+        ]
+      }
+    },
+    {
+      "id": 30,
+      "type": {
+        "def": {
+          "variant": {
+            "variants": [
+              {
+                "fields": [
+                  {
+                    "type": 31
+                  }
+                ],
+                "index": 0,
+                "name": "Ok"
+              },
+              {
+                "fields": [
+                  {
+                    "type": 26
+                  }
+                ],
+                "index": 1,
+                "name": "Err"
+              }
+            ]
+          }
+        },
+        "params": [
+          {
+            "name": "T",
+            "type": 31
+          },
+          {
+            "name": "E",
+            "type": 26
+          }
+        ],
+        "path": [
+          "Result"
+        ]
+      }
+    },
+    {
+      "id": 31,
+      "type": {
+        "def": {
+          "variant": {
+            "variants": [
+              {
+                "fields": [
+                  {
+                    "type": 9
+                  }
+                ],
+                "index": 0,
+                "name": "Ok"
+              },
+              {
+                "fields": [
+                  {
+                    "type": 29
+                  }
+                ],
+                "index": 1,
+                "name": "Err"
+              }
+            ]
+          }
+        },
+        "params": [
+          {
+            "name": "T",
+            "type": 9
+          },
+          {
+            "name": "E",
+            "type": 29
+          }
+        ],
+        "path": [
+          "Result"
+        ]
+      }
+    },
+    {
+      "id": 32,
+      "type": {
+        "def": {
+          "variant": {
+            "variants": [
+              {
+                "fields": [
+                  {
+                    "type": 33
+                  }
+                ],
+                "index": 0,
+                "name": "Ok"
+              },
+              {
+                "fields": [
+                  {
+                    "type": 26
+                  }
+                ],
+                "index": 1,
+                "name": "Err"
+              }
+            ]
+          }
+        },
+        "params": [
+          {
+            "name": "T",
+            "type": 33
+          },
+          {
+            "name": "E",
+            "type": 26
+          }
+        ],
+        "path": [
+          "Result"
+        ]
+      }
+    },
+    {
+      "id": 33,
+      "type": {
+        "def": {
+          "variant": {
+            "variants": [
+              {
+                "index": 0,
+                "name": "None"
+              },
+              {
+                "fields": [
+                  {
+                    "type": 34
+                  }
+                ],
+                "index": 1,
+                "name": "Some"
+              }
+            ]
+          }
+        },
+        "params": [
+          {
+            "name": "T",
+            "type": 34
+          }
+        ],
+        "path": [
+          "Option"
+        ]
+      }
+    },
+    {
+      "id": 34,
+      "type": {
+        "def": {
+          "composite": {
+            "fields": [
+              {
+                "name": "description",
+                "type": 3,
+                "typeName": "String"
+              },
+              {
+                "name": "votes_for",
+                "type": 5,
+                "typeName": "u64"
+              },
+              {
+                "name": "votes_against",
+                "type": 5,
+                "typeName": "u64"
+              },
+              {
+                "name": "active",
+                "type": 16,
+                "typeName": "bool"
+              }
+            ]
+          }
+        },
+        "path": [
+          "governance",
+          "governance",
+          "Proposal"
+        ]
+      }
+    },
+    {
+      "id": 35,
+      "type": {
+        "def": {
+          "variant": {
+            "variants": [
+              {
+                "fields": [
+                  {
+                    "type": 16
+                  }
+                ],
+                "index": 0,
+                "name": "Ok"
+              },
+              {
+                "fields": [
+                  {
+                    "type": 26
+                  }
+                ],
+                "index": 1,
+                "name": "Err"
+              }
+            ]
+          }
+        },
+        "params": [
+          {
+            "name": "T",
+            "type": 16
+          },
+          {
+            "name": "E",
+            "type": 26
+          }
+        ],
+        "path": [
+          "Result"
+        ]
+      }
+    },
+    {
+      "id": 36,
+      "type": {
+        "def": {
+          "primitive": "u128"
+        }
+      }
+    },
+    {
+      "id": 37,
+      "type": {
+        "def": {
+          "composite": {
+            "fields": [
+              {
+                "type": 1,
+                "typeName": "[u8; 32]"
+              }
+            ]
+          }
+        },
+        "path": [
+          "ink_primitives",
+          "types",
+          "Hash"
+        ]
+      }
+    },
+    {
+      "id": 38,
+      "type": {
+        "def": {
+          "primitive": "u32"
+        }
+      }
+    },
+    {
+      "id": 39,
+      "type": {
+        "def": {
+          "variant": {}
+        },
+        "path": [
+          "ink_env",
+          "types",
+          "NoChainExtension"
+        ]
+      }
+    }
+  ],
+  "version": 5
+}

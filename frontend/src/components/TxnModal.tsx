@@ -23,9 +23,29 @@ export function TxnModal({ isOpen, status, message, txHash, onClose }: TxnModalP
     }
   }, [isOpen, status, onClose]);
 
+  const getSubscanUrl = (network?: string): string => {
+    // Get network from environment variable or detect from RPC URL
+    const detectedNetwork = network || import.meta.env.VITE_NETWORK || 'polkadot';
+    
+    switch (detectedNetwork.toLowerCase()) {
+      case 'paseo':
+        return 'https://paseo.subscan.io';
+      case 'shibuya':
+        return 'https://shibuya.subscan.io';
+      case 'polkadot':
+      case 'polkadot-testnet':
+        return 'https://polkadot.subscan.io';
+      case 'westend':
+        return 'https://westend.subscan.io';
+      default:
+        return 'https://polkadot.subscan.io'; // default
+    }
+  };
+
   const handleViewOnSubscan = () => {
     if (txHash) {
-      window.open(`https://polkadot.subscan.io/extrinsic/${txHash}`, '_blank');
+      const subscanBase = getSubscanUrl();
+      window.open(`${subscanBase}/extrinsic/${txHash}`, '_blank');
     }
   };
 

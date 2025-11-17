@@ -62,8 +62,69 @@ echo -e "${BLUE}📝 Network: $NETWORK${NC}"
 echo -e "${BLUE}🌐 RPC: $RPC_URL${NC}"
 echo -e "${BLUE}👤 Address: $ADDRESS${NC}"
 echo ""
-echo -e "${YELLOW}⚠️  This will deploy 7 contracts to Polkadot Testnet${NC}"
-echo -e "${YELLOW}⚠️  Make sure you have at least 0.1 DOT in your account${NC}"
+
+# Function to get Subscan URL based on network
+get_subscan_url() {
+  local rpc_url="$RPC_URL"
+  local network="$NETWORK"
+  
+  # Detect network from RPC URL if NETWORK not set
+  if [ -z "$network" ]; then
+    if echo "$rpc_url" | grep -qi "paseo"; then
+      network="paseo"
+    elif echo "$rpc_url" | grep -qi "shibuya"; then
+      network="shibuya"
+    elif echo "$rpc_url" | grep -qi "polkadot"; then
+      network="polkadot"
+    elif echo "$rpc_url" | grep -qi "westend"; then
+      network="westend"
+    else
+      network="polkadot"  # default
+    fi
+  fi
+  
+  # Return appropriate Subscan URL
+  case "$network" in
+    paseo)
+      echo "https://paseo.subscan.io"
+      ;;
+    shibuya)
+      echo "https://shibuya.subscan.io"
+      ;;
+    polkadot|polkadot-testnet)
+      echo "https://polkadot.subscan.io"
+      ;;
+    westend)
+      echo "https://westend.subscan.io"
+      ;;
+    *)
+      echo "https://polkadot.subscan.io"  # default
+      ;;
+  esac
+}
+
+SUBSCAN_BASE=$(get_subscan_url)
+echo -e "${BLUE}🔍 Subscan Explorer: $SUBSCAN_BASE${NC}"
+echo ""
+
+# Detect network name for display
+DETECTED_NETWORK="$NETWORK"
+if [ -z "$DETECTED_NETWORK" ]; then
+  if echo "$RPC_URL" | grep -qi "paseo"; then
+    DETECTED_NETWORK="Paseo Testnet"
+  elif echo "$RPC_URL" | grep -qi "shibuya"; then
+    DETECTED_NETWORK="Astar Shibuya"
+  elif echo "$RPC_URL" | grep -qi "polkadot"; then
+    DETECTED_NETWORK="Polkadot Testnet"
+  elif echo "$RPC_URL" | grep -qi "westend"; then
+    DETECTED_NETWORK="Westend"
+  else
+    DETECTED_NETWORK="Polkadot Testnet"
+  fi
+fi
+
+echo -e "${YELLOW}⚠️  This will deploy 7 contracts to $DETECTED_NETWORK${NC}"
+echo -e "${YELLOW}⚠️  Make sure you have sufficient tokens in your account${NC}"
 echo ""
 read -p "Ready to deploy? (y/n): " -n 1 -r
 echo
@@ -220,31 +281,31 @@ For each contract, follow these steps:
 ## Subscan Links
 
 ### 1. health_sbt
-- **Extrinsic**: https://polkadot.subscan.io/extrinsic/${EXTRINSICS[health_sbt]}
+- **Extrinsic**: $SUBSCAN_BASE/extrinsic/${EXTRINSICS[health_sbt]}
 - **Contract File**: \`target/ink/health_sbt/health_sbt.contract\`
 
 ### 2. care_treasury
-- **Extrinsic**: https://polkadot.subscan.io/extrinsic/${EXTRINSICS[care_treasury]}
+- **Extrinsic**: $SUBSCAN_BASE/extrinsic/${EXTRINSICS[care_treasury]}
 - **Contract File**: \`target/ink/care_treasury/care_treasury.contract\`
 
 ### 3. care_space
-- **Extrinsic**: https://polkadot.subscan.io/extrinsic/${EXTRINSICS[care_space]}
+- **Extrinsic**: $SUBSCAN_BASE/extrinsic/${EXTRINSICS[care_space]}
 - **Contract File**: \`target/ink/care_space/care_space.contract\`
 
 ### 4. med_reminder
-- **Extrinsic**: https://polkadot.subscan.io/extrinsic/${EXTRINSICS[med_reminder]}
+- **Extrinsic**: $SUBSCAN_BASE/extrinsic/${EXTRINSICS[med_reminder]}
 - **Contract File**: \`target/ink/med_reminder/med_reminder.contract\`
 
 ### 5. step_counter
-- **Extrinsic**: https://polkadot.subscan.io/extrinsic/${EXTRINSICS[step_counter]}
+- **Extrinsic**: $SUBSCAN_BASE/extrinsic/${EXTRINSICS[step_counter]}
 - **Contract File**: \`target/ink/step_counter/step_counter.contract\`
 
 ### 6. zk_camera
-- **Extrinsic**: https://polkadot.subscan.io/extrinsic/${EXTRINSICS[zk_camera]}
+- **Extrinsic**: $SUBSCAN_BASE/extrinsic/${EXTRINSICS[zk_camera]}
 - **Contract File**: \`target/ink/zk_camera/zk_camera.contract\`
 
 ### 7. governance
-- **Extrinsic**: https://polkadot.subscan.io/extrinsic/${EXTRINSICS[governance]}
+- **Extrinsic**: $SUBSCAN_BASE/extrinsic/${EXTRINSICS[governance]}
 - **Contract File**: \`target/ink/governance/governance.contract\`
 
 ## Next Steps
