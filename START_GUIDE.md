@@ -1,65 +1,65 @@
-# 🚀 دليل التشغيل السريع - ChainCARE Protocol
+# 🚀 Quick Start Guide - ChainCARE Protocol
 
-## تشغيل المشروع بالكامل
+## Run All Project Components
 
-لتشغيل جميع مكونات المشروع (Frontend + Oracle) في ملف واحد:
+To run all project components (Frontend + Oracle) in one file:
 
 ```bash
 ./start.sh
 ```
 
-هذا الملف سيقوم بـ:
-- ✅ التحقق من المتطلبات (Node.js, Python, Rust)
-- ✅ تثبيت dependencies تلقائياً إذا لم تكن موجودة
-- ✅ تشغيل Frontend على http://localhost:5173
-- ✅ تشغيل Oracle (إذا كان Python متوفراً وتم إعداد الإعدادات)
+This script will:
+- ✅ Check prerequisites (Node.js, Python, Rust)
+- ✅ Install dependencies automatically if not present
+- ✅ Start Frontend on http://localhost:3000
+- ✅ Start Oracle (if Python is available and configured)
 
-## إيقاف جميع الخدمات
+## Stop All Services
 
 ```bash
 ./stop.sh
 ```
 
-أو اضغط `Ctrl+C` في الطرفية التي تشغل `start.sh`
+Or press `Ctrl+C` in the terminal running `start.sh`
 
-## المكونات
+## Components
 
 ### Frontend
-- **المسار**: `frontend/`
-- **البورت**: `5173` (افتراضي Vite)
-- **اللوجات**: `logs/frontend.log`
+- **Path**: `frontend/`
+- **Port**: `3000` (default Vite)
+- **Logs**: `logs/frontend.log`
 
 ### Oracle
-- **المسار**: `oracle/`
-- **المتطلبات**: Python 3.8+ و `substrate-interface`, `bleak`
-- **اللوجات**: `logs/oracle.log`
-- **ملاحظة**: يحتاج إعداد `RPC_URL` و `MNEMONIC` كمتغيرات بيئة أو ملف `oracle/config.json`
+- **Path**: `oracle/`
+- **Requirements**: Python 3.8+ and `substrate-interface`, `bleak`
+- **Logs**: `logs/oracle.log`
+- **Note**: Requires `RPC_URL` and `MNEMONIC` environment variables or `oracle/config.json` file
 
-## المتطلبات
+## Prerequisites
 
-- **Node.js**: v18+ (لـ Frontend)
-- **npm**: (يأتي مع Node.js)
-- **Python 3.8+**: (اختياري - للـ Oracle)
-- **Rust/Cargo**: (اختياري - لبناء العقود)
+- **Node.js**: v18+ (for Frontend)
+- **npm**: (comes with Node.js)
+- **Python 3.8+**: (optional - for Oracle)
+- **Rust/Cargo**: (optional - for building contracts)
 
-## استكشاف الأخطاء
+## Troubleshooting
 
-### Frontend لا يعمل
+### Frontend Not Working
 ```bash
 cd frontend
 npm install
 npm run dev
 ```
 
-### Oracle لا يعمل
+### Oracle Not Working
 ```bash
 cd oracle
 pip3 install -r requirements.txt
-# تأكد من إعداد RPC_URL و MNEMONIC
+# Make sure RPC_URL and MNEMONIC are configured
 python3 oracle.py
 ```
 
-### عرض اللوجات
+### View Logs
 ```bash
 # Frontend
 tail -f logs/frontend.log
@@ -68,9 +68,8 @@ tail -f logs/frontend.log
 tail -f logs/oracle.log
 ```
 
-## ملاحظات
+## Notes
 
-- جميع العمليات تعمل في الخلفية (background)
-- ملف `.chaincare_pids` يحتوي على معرفات العمليات
-- يمكنك إيقاف جميع الخدمات باستخدام `./stop.sh`
-
+- All processes run in the background
+- `.chaincare_pids` file contains process IDs
+- You can stop all services using `./stop.sh`

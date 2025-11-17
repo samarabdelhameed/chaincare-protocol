@@ -5,7 +5,7 @@ from bleak import BleakClient
 
 RPC_URL   = os.getenv("RPC_URL", "wss://ws.paseo.ara.io")
 MNEMONIC  = os.getenv("MNEMONIC")
-CONTRACT  = "5Go...med_reminder"  # هنعدله لما نديبلوي
+CONTRACT  = "5Go...med_reminder"  # Update after deployment
 UUID      = "00002a00-0000-1000-8000-00805f9b34fb"
 
 keypair   = Keypair.create_from_uri(MNEMONIC)
